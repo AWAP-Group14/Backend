@@ -30,7 +30,7 @@ let sign = (userId) => {
 let setup = (passport, data) => {
     // setup JWTStragety
 
-    // Users id is awailable in req.user.userI
+    // Users id is available in req.user.userI
     passport.use(new JwtStrategy(options, (payload, done) => {
         done(null, {userId: payload.userId})
     }))
