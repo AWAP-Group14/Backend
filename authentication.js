@@ -56,6 +56,7 @@ let setup = (passport, data) => {
             }
         }
     ))
+    console.log("Basic configured")
 }
 
 module.exports = {
