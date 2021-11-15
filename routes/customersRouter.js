@@ -19,6 +19,7 @@ module.exports = function(passport, data) {
     router.post('/login', passport.authenticate('basic', {session: false}), (req, res) => {
         const token = require('../authentication').sign(req.user.id)
         res.json({token : token})
+        console.log(req.body.previousURL)
     })
 
     router.post('/signup', (req, res) => {
