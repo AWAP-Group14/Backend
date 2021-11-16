@@ -12,13 +12,4 @@ const client = new Client({
 })
 client.connect();
 
-client.query('Select * from customer', (err, res)=>{
-  if (!err) {
-      console.log(res.rows);    
-  } else {
-    console.log(err.message);
-  }
-
-  
-})
 module.exports = client;
