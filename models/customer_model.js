@@ -7,6 +7,11 @@ const customer = {
     },
     getAll: function(callback) {
         return client.query('Select * from customer', callback);
+    },
+    insertCustomer: function(userId, body, hashedPassword, callback) {
+        return client.query("INSERT INTO customer VALUES ($1, $2, $3, $4, $5, $6, $7) RETURNING *", 
+        [userId, body.firstname, body.lastname, body.address, body.phone, body.email, hashedPassword], callback)
     }
+
 }
 module.exports = customer

@@ -5,10 +5,11 @@ module.exports = function(passport, data) {
     const { v4: uuidv4 } = require('uuid');
     const Ajv = require('ajv')
     const ajv = new Ajv()
+    const customer = require('../models/customer_model')
 
     //Initialize JSON Validator
-    const userSchema = require('../schemas/user.schema.json')
-    const userValidator = ajv.compile(userSchema)
+    const customerSchema = require('../schemas/user.schema.json')
+    const customerValidator = ajv.compile(customerSchema)
 
 
     router.get('/login',  (req, res) => {
@@ -19,12 +20,12 @@ module.exports = function(passport, data) {
     router.post('/login', passport.authenticate('basic', {session: false}), (req, res) => {
         const token = require('../authentication').sign(req.user.id)
         res.json({token : token})
-        console.log(req.body.previousURL)
+        // Previous URL not yet implemented
     })
 
     router.post('/signup', (req, res) => {
         
-        const validationResult = userValidator(req.body)
+        const validationResult = customerValidator(req.body)
         if(validationResult) {
             //This should check from the database if the email already exist
             if (data.users.find(user => user.email === req.body.email) != undefined ){
@@ -47,6 +48,27 @@ module.exports = function(passport, data) {
                 email: req.body.email,
                 password: hashedPasswd
             })
+            
+            
+/*             client. query("INSERT INTO customer VALUES ($1, $2, $3, $4, $5, $6, $7)", 
+                        [userId,req.body.firstname, req.body.lastname, req.body.address, req.body.phone, req.body.email, hashedPasswd], 
+                        (err, res) => {
+                            if (err) {
+                                console.log(err.stack)
+                            } else {
+                                console.log("Succeed")
+                            }
+                        }); 
+
+            
+ */
+            customer.insertCustomer(userId, req.body, hashedPasswd, function(err, dbResult) {
+                if (err) {
+                    console.log(err.stack)
+                } else {
+                    console.log(dbResult.rows)
+                }
+            })            
             res.send(userId)
         } else {
             res.sendStatus(400)

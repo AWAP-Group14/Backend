@@ -6,7 +6,7 @@ var data = {
     users: [
 
     ],
-    items: [
+    managers: [
 
     ]
 }
