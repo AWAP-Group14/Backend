@@ -88,11 +88,6 @@ module.exports = function(passport, data) {
         }  
     })
 
-    router.get('/restaurants',  (req, res) => {
-        //i dont think this page need to be handled by the backend because no data is required
-        res.send("This should return a login page")
-    })
-
     return router;
 
 }
