@@ -1,0 +1,101 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema",
+    "$id": "http://example.com/example456.json",
+    "type": "object",
+    "title": "The root schema",
+    "description": "The root schema comprises the entire JSON document.",
+    "default": {},
+    "examples": [
+        {
+            "restaurantName": "Arnold's",
+            "email": "manager@arnolds.com",
+            "password": "euifbiu123891r9h0329rufsni",
+            "restaurantType": "Sweets",
+            "openingHour": "Monday: 5 - 10;Tuesday: 8 - 13, 14 - 20;Wednesday: 8 - 13, 14 - 20; Thursday: 8 - 13, 14 - 20;Friday: 8 - 13, 14 - 20;Saturday:8 - 13, 14 - 20,Sunday: 8 - 13, 14 - 20 ",
+            "priceRange": "$$$$",
+            "address": "Tutkijantie 2, 905790 Oulu"
+        }
+    ],
+    "required": [
+        "restaurantName",
+        "email",
+        "password",
+        "restaurantType",
+        "openingHour",
+        "priceRange",
+        "address"
+    ],
+    "properties": {
+        "restaurantName": {
+            "$id": "#/properties/restaurantName",
+            "type": "string",
+            "title": "The restaurantName schema",
+            "description": "An explanation about the purpose of this instance.",
+            "default": "",
+            "examples": [
+                "Arnold's"
+            ]
+        },
+        "email": {
+            "$id": "#/properties/email",
+            "type": "string",
+            "title": "The email schema",
+            "description": "An explanation about the purpose of this instance.",
+            "default": "",
+            "examples": [
+                "manager@arnolds.com"
+            ]
+        },
+        "password": {
+            "$id": "#/properties/password",
+            "type": "string",
+            "title": "The password schema",
+            "description": "An explanation about the purpose of this instance.",
+            "default": "",
+            "examples": [
+                "euifbiu123891r9h0329rufsni"
+            ]
+        },
+        "restaurantType": {
+            "$id": "#/properties/restaurantType",
+            "type": "string",
+            "title": "The restaurantType schema",
+            "description": "An explanation about the purpose of this instance.",
+            "default": "",
+            "examples": [
+                "Sweets"
+            ]
+        },
+        "openingHour": {
+            "$id": "#/properties/openingHour",
+            "type": "string",
+            "title": "The openingHour schema",
+            "description": "An explanation about the purpose of this instance.",
+            "default": "",
+            "examples": [
+                "Monday: 5 - 10;Tuesday: 8 - 13, 14 - 20;Wednesday: 8 - 13, 14 - 20; Thursday: 8 - 13, 14 - 20;Friday: 8 - 13, 14 - 20;Saturday:8 - 13, 14 - 20,Sunday: 8 - 13, 14 - 20 "
+            ]
+        },
+        "priceRange": {
+            "$id": "#/properties/priceRange",
+            "type": "string",
+            "title": "The priceRange schema",
+            "description": "An explanation about the purpose of this instance.",
+            "default": "",
+            "examples": [
+                "$$$$"
+            ]
+        },
+        "address": {
+            "$id": "#/properties/address",
+            "type": "string",
+            "title": "The address schema",
+            "description": "An explanation about the purpose of this instance.",
+            "default": "",
+            "examples": [
+                "Tutkijantie 2, 905790 Oulu"
+            ]
+        }
+    },
+    "additionalProperties": false
+}

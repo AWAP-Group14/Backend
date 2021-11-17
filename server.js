@@ -5,8 +5,9 @@
 const express =  require('express')
 const app = express()
 const passport = require('passport')
+const cors = require('cors');
 
-
+app.use(cors());
 
 
 // Set up global data state
@@ -27,10 +28,14 @@ app.use(express.json()) // To parse the incoming requests with JSON payloads
 // object using the above created passport and data objects
 let customersRoutes = require('./routes/customersRouter')(passport, data)
 let managersRoutes = require('./routes/managersRouter')(passport, data)
+let ordersRoutes = require('./routes/orderRouter')(passport, data)
+let restaurantssRoutes = require('./routes/restaurantsRouter')(passport, data)
 
 // Attatch the imported routes to the corresponding endpoints
 app.use('/', customersRoutes)
 app.use('/manager', managersRoutes)
+app.use('/orders', ordersRoutes)
+app.use('/restaurants', restaurantssRoutes)
 
 
 // redirect root request to api documentation
