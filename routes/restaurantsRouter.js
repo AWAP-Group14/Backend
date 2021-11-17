@@ -24,7 +24,6 @@ module.exports = function(passport, data) {
                     res.json(err.stack)
                     res.status(400)
                 } else {
-                    // res.json(dbResult.rows)
                     res.json(dbResult.rows)
                     res.status(200)
                 }
@@ -36,7 +35,6 @@ module.exports = function(passport, data) {
                     res.json(err.stack)
                     res.status(400)
                 } else {
-                    // res.json(dbResult.rows)
                     res.json(dbResult.rows)
                     res.status(200)
                 }
@@ -45,10 +43,10 @@ module.exports = function(passport, data) {
             type = req.query.type
             restaurant.getAllFilteredByType(type, function(err, dbResult) {
                 if (err) {
+
                     res.json(err.stack)
                     res.status(400)
                 } else {
-                    // res.json(dbResult.rows)
                     res.json(dbResult.rows)
                     res.status(200)
                 }
@@ -59,7 +57,6 @@ module.exports = function(passport, data) {
                     res.json(err.stack)
                     res.status(400)
                 } else {
-                    // res.json(dbResult.rows)
                     res.json(dbResult.rows)
                     res.status(200)
                 }
@@ -77,7 +74,6 @@ module.exports = function(passport, data) {
             } else if (dbResult.rows.length == 0){
                 res.json("Restaurant not found")
                 res.status(404)
-                
             } else {
                 res.json(dbResult.rows)
                 res.status(200)
