@@ -32,7 +32,7 @@ let ordersRoutes = require('./routes/orderRouter')(passport, data)
 let restaurantssRoutes = require('./routes/restaurantsRouter')(passport, data)
 
 // Attatch the imported routes to the corresponding endpoints
-app.use('/', customersRoutes)
+app.use('/customer', customersRoutes)
 app.use('/manager', managersRoutes)
 app.use('/orders', ordersRoutes)
 app.use('/restaurants', restaurantssRoutes)
