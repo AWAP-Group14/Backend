@@ -3,7 +3,7 @@
 // In the real implementation, database will be used instead
 
 var data = {
-    users: [
+    customers: [
 
     ],
     managers: [

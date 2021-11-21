@@ -1,3 +1,6 @@
+const { response } = require('express');
+const { insertCustomer, getByEmail } = require('../models/customer_model');
+
 module.exports = function(passport, data) {
 
     const bcrypt = require('bcryptjs')
@@ -32,40 +35,60 @@ module.exports = function(passport, data) {
 
     Not a priority, will be taken care later in the project
     */
-    router.post('/signup', (req, res) => {
+
+    
+
+    router.post('/signup', async (req, res) => {
+
         
-        const validationResult = managerValidator(req.body)
+        
+        const validationResult = customerValidator(req.body)
+
         if(validationResult) {
             //This should check from the database if the email already exist
-            if (data.managers.find(manager => manager.email === req.body.email) != undefined ){
-                res.status(409)
-                res.send("email already exists in the database")
-                return
-            }
-            const salt = bcrypt.genSaltSync(6)
-            const hashedPasswd = bcrypt.hashSync(req.body.password, salt)
-            
-            let managerId = uuidv4()
 
-            //This should push the data into the database
-            console.log(req.body)
-            console.log(data)
-            data.managers.push({
-                id: managerId,
-                restaurantName: req.body.restaurantName,
-                email: req.body.email,
-                password: hashedPasswd,
-                restaurantType: req.body.restaurantType,
-                openingHour: req.body.openingHour,
-                priceRange: req.body.priceRange,
-                address: req.body.address
-            })
-            res.send(managerId)
+            customer.getByEmail(req.body.email, function(err, dbResult) {
+                if (err) {
+                    response.json(err);
+                } else {
+                   let emailCheck = JSON.stringify(dbResult.rows);
+                    console.log(emailCheck +" email from db");
+
+                    console.log("emailcheck lenght "+emailCheck.length);
+
+                    if (emailCheck.length > 2){
+                        res.status(409)
+                        res.send("email already exists in the database")
+                        return
+                    }
+        
+            
+                    const salt = bcrypt.genSaltSync(6)
+                    const hashedPasswd = bcrypt.hashSync(req.body.password, salt)
+        
+                    let customerId = uuidv4()
+        
+                    //This should push the data into the database
+                    customer.insertCustomer(customerId, req.body, hashedPasswd, function(err, dbResult) {
+                        if (err) {
+                            console.log(err.stack)
+                        } else {
+                            console.log(dbResult.rows)
+                        }
+                    })
+                    
+                    res.send("customer added")
+
+                }
+            });
+
         } else {
             res.sendStatus(400)
         }
         
     })
+
+    
 
     router.get('/:id?',
     function(request, response) {
@@ -87,6 +110,29 @@ module.exports = function(passport, data) {
         });
     }
 });
+
+router.get('/email/:email?',
+    function(request, response) {
+        if (request.params.email) {
+            customer.getByEmail(request.params.email, function(err, dbResult) {
+         if (err) {
+             response.json(err);
+         } else {
+            response.json(dbResult.rows);
+        }
+        });
+        } else {
+            customer.getAll(function(err, dbResult) {
+            if (err) {
+                response.json(err);
+            } else {
+                response.json(dbResult.rows);
+            }
+        });
+    }
+});
+
+
 
     return router;
 
