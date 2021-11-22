@@ -5,7 +5,8 @@ var query = ""
 const restaurant = {
 
     getByNameAndEmail: function(name, email, callback) {
-        return client.query('Select * from restaurant where restaurant_name=$1 and restaurant_email=$2', [name, email], callback);    
+
+        return client.query('Select * from restaurant where restaurant_name=$1 or restaurant_email=$2', [name, email], callback);    
 
     },
 
@@ -36,7 +37,7 @@ const restaurant = {
 
     insertRestaurant: function(body, hashedPassword, callback) {
         const values = [body.restaurantName, body.address, body.openingHour, body.image, body.email, hashedPassword, body.restaurantType, body.priceRange]
-        return client.query("INSERT INTO restaurant VALUES ($1, $2, $3, $4, $5, $6, $7) RETURNING *", values, callback)
+        return client.query("INSERT INTO restaurant VALUES ($1, $2, $3, $4, $5, $6, $7, $8) RETURNING *", values, callback)
     }
 
 }
