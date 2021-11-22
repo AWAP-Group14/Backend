@@ -57,6 +57,17 @@ module.exports = function(passport, data) {
                     res.status(200)
                 }
             })
+        } else if (req.query.limit != undefined) {
+            restaurant.getLimited(req.query.limit, function(err, dbResult) {
+                if (err) {
+                    res.json(err.stack)
+                    res.status(400)
+                } else {
+                    // res.json(dbResult.rows)
+                    res.json(dbResult.rows)
+                    res.status(200)
+                }
+            }) 
         } else {
             restaurant.getAll(function(err, dbResult) {
                 if (err) {
@@ -64,6 +75,7 @@ module.exports = function(passport, data) {
                     res.status(400)
                 } else {
                     // res.json(dbResult.rows)
+                    console.log(dbResult.rows)
                     res.json(dbResult.rows)
                     res.status(200)
                 }
