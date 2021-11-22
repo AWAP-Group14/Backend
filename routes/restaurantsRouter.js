@@ -8,9 +8,13 @@ module.exports = function(passport, data) {
     const restaurant = require('../models/restaurant_model')
 
     //Initialize JSON Validator
+    const managerSchema = require('../schemas/manager.schema.json')
+    const managerValidator = ajv.compile(managerSchema)
+
     // const customerSchema = require('../schemas/user.schema.json')
     // const customerValidator = ajv.compile(customerSchema)
 
+    //get restaurants with filters
     router.get('/',  (req, res) => {
         var price = 0
         var type = ""
@@ -69,6 +73,7 @@ module.exports = function(passport, data) {
         
     })
 
+    //get restaurant by name
     router.get('/:name', (req, res) => {
         restaurant.getByName(req.params.name, function (err, dbResult) {
             if (err) {
@@ -85,6 +90,58 @@ module.exports = function(passport, data) {
             }
         })
     })
+
+    router.post('/signup', async (req, res) => {
+
+        
+        
+        const validationResult = managerValidator(req.body)
+
+        if(validationResult) {
+            //This should check from the database if the email already exist
+
+            restaurant.getByNameAndEmail(req.body.restaurantName, req.body.email, function(err, dbResult) {
+                if (err) {
+                    response.json(err);
+                } else {
+                   let emailCheck = JSON.stringify(dbResult.rows);
+                    console.log(emailCheck +" email from db");
+
+                    console.log("emailcheck lenght "+emailCheck.length);
+
+                    if (emailCheck.length > 2){
+                        res.status(409)
+                        res.send("email already exists in the database")
+                        return
+                    }
+        
+            
+                    const salt = bcrypt.genSaltSync(6)
+                    const hashedPasswd = bcrypt.hashSync(req.body.password, salt)
+        
+                    let customerId = uuidv4()
+        
+                    //This should push the data into the database
+                    restaurant.insertRestaurant(req.body, hashedPasswd, function(err, dbResult) {
+                        if (err) {
+                            console.log(err.stack)
+                        } else {
+                            console.log(dbResult.rows)
+                        }
+                    })
+                    
+                    res.send("customer added")
+
+                }
+            });
+
+        } else {
+            res.sendStatus(400)
+        }
+        
+    })
+
+
 
     return router;
 
