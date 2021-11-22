@@ -3,6 +3,7 @@ const JwtStrategy = require('passport-jwt').Strategy
 const ExtractJwt = require('passport-jwt').ExtractJwt
 const BasicStrategy = require('passport-http').BasicStrategy;
 const bcrypt = require('bcryptjs')
+const customer = require('./models/customer_model')
 
 
 // The secret is stored in a environmental variable
@@ -38,25 +39,24 @@ let setup = (passport, data) => {
     // Set up BasicStrategy
     passport.use(new BasicStrategy(
         (email, password, done) => {
-            const user = data["users"].find(
-                user => {
-                    if (user.email === email){
-                        if (bcrypt.compareSync(password, user.password)){
-                            return true
+            customer.getByEmail(email, function(err, dbResult) {
+                if (err) {
+                    console.log(err);
+                } else {
+                   let emailCheck = JSON.stringify(dbResult.rows);
+                    if (emailCheck.length > 2){
+                        if (bcrypt.compareSync(password, dbResult.rows[0].customer_password)){
+                            done(null, true)
                         } else {
-                            return false
+                            done(null, false)
                         }
+                    } else {
+                        done(null, false)
                     }
                 }
-            )
-            if (user != undefined){
-                done(null, user)
-            } else {
-                done(null, false)
-            }
+            })
         }
     ))
-    console.log("Basic configured")
 }
 
 module.exports = {
