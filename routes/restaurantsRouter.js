@@ -123,7 +123,7 @@ module.exports = function(passport, data) {
 
                     if (emailCheck.length > 2){
                         res.status(409)
-                        res.send("email already exists in the database")
+                        res.send("email or restaurant name already exists in the database")
                         return
                     }
         
@@ -142,7 +142,7 @@ module.exports = function(passport, data) {
                         }
                     })
                     
-                    res.send("customer added")
+                    res.send("restaurant added")
 
                 }
             });
