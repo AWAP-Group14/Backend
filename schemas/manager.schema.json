@@ -8,22 +8,25 @@
     "examples": [
         {
             "restaurantName": "Arnold's",
+            "address": "Tutkijantie 2, 905790 Oulu",
+            "openingHour": "Monday: 5 - 10;Tuesday: 8 - 13, 14 - 20;Wednesday: 8 - 13, 14 - 20; Thursday: 8 - 13, 14 - 20;Friday: 8 - 13, 14 - 20;Saturday:8 - 13, 14 - 20,Sunday: 8 - 13, 14 - 20 ",
+            "image": "https://1000logos.net/wp-content/uploads/2017/03/McDonalds-logo.png",
             "email": "manager@arnolds.com",
             "password": "euifbiu123891r9h0329rufsni",
             "restaurantType": "Sweets",
-            "openingHour": "Monday: 5 - 10;Tuesday: 8 - 13, 14 - 20;Wednesday: 8 - 13, 14 - 20; Thursday: 8 - 13, 14 - 20;Friday: 8 - 13, 14 - 20;Saturday:8 - 13, 14 - 20,Sunday: 8 - 13, 14 - 20 ",
-            "priceRange": "$$$$",
-            "address": "Tutkijantie 2, 905790 Oulu"
+            "priceRange": 1
         }
     ],
     "required": [
         "restaurantName",
+        "address",
+        "openingHour",
+        "image",
         "email",
         "password",
         "restaurantType",
-        "openingHour",
-        "priceRange",
-        "address"
+        "priceRange"
+        
     ],
     "properties": {
         "restaurantName": {
@@ -78,12 +81,12 @@
         },
         "priceRange": {
             "$id": "#/properties/priceRange",
-            "type": "string",
+            "type": "integer",
             "title": "The priceRange schema",
             "description": "An explanation about the purpose of this instance.",
             "default": "",
             "examples": [
-                "$$$$"
+                1
             ]
         },
         "address": {
@@ -94,6 +97,16 @@
             "default": "",
             "examples": [
                 "Tutkijantie 2, 905790 Oulu"
+            ]
+        },
+        "image": {
+            "$id": "#/properties/image",
+            "type": "string",
+            "title": "The image schema",
+            "description": "An explanation about the purpose of this instance.",
+            "default": "",
+            "examples": [
+                "https://1000logos.net/wp-content/uploads/2017/03/McDonalds-logo.png"
             ]
         }
     },
