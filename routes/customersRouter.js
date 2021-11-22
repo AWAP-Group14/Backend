@@ -131,15 +131,6 @@ router.get('/email/:email?',
         });
     }
 });
-
-                if (err) {
-                    response.json(err);
-                } else {
-                    response.json(dbResult.rows);
-                }
-            });
-        }
-    });
     return router;
 
 }
