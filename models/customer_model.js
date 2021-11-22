@@ -10,7 +10,7 @@ const customer = {
     },
 
     getByEmail: function(email, callback) {
-        return client.query('Select customer_email from customer where customer_email=$1', [email], callback);
+        return client.query('Select customer_email, customer_password from customer where customer_email=$1', [email], callback);
     },
 
     insertCustomer: function(customerId, body, hashedPassword, callback) {
