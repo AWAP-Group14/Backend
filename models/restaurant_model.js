@@ -3,9 +3,10 @@ const restaurantInfo = " restaurant_name, restaurant_address, restaurant_operati
 var query = ""
 
 const restaurant = {
-    getByName: function(name, callback) {
-        query = 'Select' + restaurantInfo + 'from restaurant where restaurant_name=$1'
-        return client.query(query, [name], callback);    
+
+    getByNameAndEmail: function(name, email, callback) {
+        return client.query('Select * from restaurant where restaurant_name=$1 and restaurant_email=$2', [name, email], callback);    
+
     },
 
     getAll: function(callback) {
@@ -33,10 +34,9 @@ const restaurant = {
         return client.query(query, callback);
     },
 
-    //Not yet implemented
     insertRestaurant: function(body, hashedPassword, callback) {
-        const values = [userId, body.firstname, body.lastname, body.address, body.phone, body.email, hashedPassword]
-        //return client.query("INSERT INTO customer VALUES ($1, $2, $3, $4, $5, $6, $7) RETURNING *", values, callback)
+        const values = [body.restaurantName, body.address, body.openingHour, body.image, body.email, hashedPassword, body.restaurantType, body.priceRange]
+        return client.query("INSERT INTO restaurant VALUES ($1, $2, $3, $4, $5, $6, $7) RETURNING *", values, callback)
     }
 
 }

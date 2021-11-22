@@ -10,11 +10,11 @@ const customer = {
     },
 
     getByEmail: function(email, callback) {
-        return client.query('Select * from customer where customer_email=$1', [email], callback);
+        return client.query('Select customer_email from customer where customer_email=$1', [email], callback);
     },
 
-    insertCustomer: function(userId, body, hashedPassword, callback) {
-        const values = [userId, body.firstname, body.lastname, body.address, body.phone, body.email, hashedPassword]
+    insertCustomer: function(customerId, body, hashedPassword, callback) {
+        const values = [customerId, body.firstname, body.lastname, body.email, body.phone, body.address, hashedPassword]
         return client.query("INSERT INTO customer VALUES ($1, $2, $3, $4, $5, $6, $7) RETURNING *", values, callback)
     }
 
