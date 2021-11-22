@@ -3,15 +3,12 @@
 // In the real implementation, database will be used instead
 
 var data = {
-    customers: [
 
-    ],
-    managers: [
+    users: [],
+    managers: [],
+    orders: [],
+    shoppingCart: []
 
-    ],
-    orders: [
-        
-    ]
 }
 
 module.exports = data

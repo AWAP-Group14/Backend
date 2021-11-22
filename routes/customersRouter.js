@@ -15,9 +15,9 @@ module.exports = function(passport, data) {
     const customerValidator = ajv.compile(customerSchema)
 
     // Just an example
-    router.get('/login',  (req, res) => {
+    router.get('/',  (req, res) => {
         //i dont think this page need to be handled by the backend because no data is required
-        res.send("This should return a login page")
+        res.send("It works")
     })
 
     // OK
@@ -94,12 +94,12 @@ module.exports = function(passport, data) {
     function(request, response) {
         if (request.params.id) {
             customer.getById(request.params.id, function(err, dbResult) {
-         if (err) {
-             response.json(err);
-         } else {
-            response.json(dbResult.rows);
-        }
-        });
+                if (err) {
+                    response.json(err);
+                } else {
+                    response.json(dbResult.rows);
+                }
+            });
         } else {
             customer.getAll(function(err, dbResult) {
             if (err) {
@@ -132,8 +132,14 @@ router.get('/email/:email?',
     }
 });
 
-
-
+                if (err) {
+                    response.json(err);
+                } else {
+                    response.json(dbResult.rows);
+                }
+            });
+        }
+    });
     return router;
 
 }
