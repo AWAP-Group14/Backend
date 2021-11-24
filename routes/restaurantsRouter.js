@@ -85,7 +85,7 @@ module.exports = function(passport, data) {
         
     })
 
-/*     //get restaurant by name
+    //get restaurant by name
     router.get('/:name', (req, res) => {
         restaurant.getByName(req.params.name, function (err, dbResult) {
             if (err) {
@@ -98,13 +98,13 @@ module.exports = function(passport, data) {
             } else {
                 res.json(dbResult.rows)
                 res.status(200)
-                
             }
         })
     })
- */
-    router.get('/test', (req, res) => {
-        restaurant.testQuery(function (err, dbResult) {
+
+    router.post('/:name/item', (req, res) => {
+        let itemId = uuidv4()
+        restaurant.insertItem(itemId, req.body, function (err, dbResult) {
             if (err) {
                 res.json(err.stack)
                 res.status(400) 
@@ -115,10 +115,21 @@ module.exports = function(passport, data) {
         })
     })
 
+    router.post("/:name/menu", (req, res) => {
+        let menuId = uuidv4()
+        restaurant.insertMenu(menuId, req.body, function (err, dbResult) {
+            if (err) {
+                res.status(400) 
+                res.json(err.stack)
+            } else {
+                res.json(dbResult.rows)
+                res.status(200)
+            }
+        })
+    })
+
     router.post('/signup', async (req, res) => {
 
-        
-        
         const validationResult = managerValidator(req.body)
 
         if(validationResult) {
