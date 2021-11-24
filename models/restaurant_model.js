@@ -38,6 +38,10 @@ const restaurant = {
     insertRestaurant: function(body, hashedPassword, callback) {
         const values = [body.restaurantName, body.address, body.openingHour, body.image, body.email, hashedPassword, body.restaurantType, body.priceRange]
         return client.query("INSERT INTO restaurant VALUES ($1, $2, $3, $4, $5, $6, $7, $8) RETURNING *", values, callback)
+    },
+
+    testQuery: function(callback) {
+        return client.query("Select * from Restaurant_category", callback)
     }
 
 }

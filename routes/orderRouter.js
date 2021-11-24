@@ -5,8 +5,9 @@ const Ajv = require('ajv')
 const ajv = new Ajv()
 
 //Initialize JSON Validator
-const shoppingCartSchema = require('../schemas/user.schema.json')
-const shopiingCartValidator = ajv.compile(shoppingCartSchema)
+const shoppingCartSchema = require('../schemas/shoppingCart.schema.json');
+// const { shoppingCart } = require('../data');
+const shoppingCartValidator = ajv.compile(shoppingCartSchema)
 
 
 module.exports = function(passport, data) {
@@ -52,35 +53,71 @@ module.exports = function(passport, data) {
         }
     });
 
-    // router.post('/shoppingCart/:id', function (req, res) {
+    router.post('/shoppingCart/:id', function (req, res) {
         
-    //     const validationResult = shopiingCartValidator(req.body)
-    //     if(validationResult) {
+        const validationResult = shoppingCartValidator(req.body)
+        if(validationResult) {
             
-    //         //This should push the data into the database
-    //         console.log(req.body)
-    //         if (data.shoppingCart.find(cart => shoppingCart.userId === req.body.email) != undefined ){
-    //             res.status(409)
-    //             res.send("email already exists in the database")
-    //             return
-    //         }
-    //         data.shoppingCart.push({
-    //             userId = req.body.userId,
-    //             restaurantId = req.body.restaurantId,
+            //This should push the data into the database
+            
+            let index = data.shoppingCart.findIndex(cart => (cart.userId === req.params.id && cart.restaurantId === req.body.restaurantId))
+            console.log(index)
+            if (index != -1 ) {
+                var itemExist = false
+                data.shoppingCart[index].items.forEach(item => {
+                    console.log(req.query.reduce != "1")
+                    if((item.itemId == req.body.itemId) && (req.query.reduce != "1")) {
+                        item.amount += req.body.amount
+                        itemExist = true 
+                    } else if (req.query.reduce == "1"){
+                        item.amount -= req.body.amount
+                        itemExist = true 
+                    }
+                })
+                if(!itemExist) {
+                    data.shoppingCart[index].items.push({
+                        itemId: req.body.itemId,
+                        amount: req.body.amount
+                    })
+                }
+            } else {
+                data.shoppingCart.push({
+                    userId : req.params.id,
+                    restaurantId : req.body.restaurantId,
+                    items: [{
+                        itemId: req.body.itemId, 
+                        amount : req.body.amount 
+                    }]
+                })
+            }
+            res.status(200)
+            res.send("Item succesfully added to the shopping cart")
+            console.log(data.shoppingCart[index])
+        } else {
+            res.sendStatus(400)
+        }
+    })
 
-    //         })
-    //         res.status(200)
-    //         res.send("Item succesfully added to the shopping cart")
-    //     } else {
-    //         res.sendStatus(400)
-    //     }
-    // })
+    router.get('/shoppingCart/:id',  (req, res) => {
+        let index = data.shoppingCart.findIndex(cart => cart.userId === req.params.id)
+        if (index !== -1) {
+            const requestedData = data.shoppingCart[index]
+            res.json(requestedData)
+        } else {
+            res.sendStatus(404)
+        }
+    })
 
-    // router.get('/shoppingCart/:id',  (req, res) => {
-    //     //i dont think this page need to be handled by the backend because no data is required
-    //     res.send("It works")
-    // })
-
+    router.delete('/shoppingCart/:id', (req, res) => {
+        let index = data.shoppingCart.findIndex(cart => cart.userId === req.params.id)
+        if (index !== -1) {
+            // Added security can be added here to make sure that only that user itself can delete the shopping cart using payload containing the user itself
+            data.shoppingCart.splice(index, 1)
+            res.sendStatus(200)
+        } else {
+            res.sendStatus(404)
+        }
+    })
 
     return router;
 

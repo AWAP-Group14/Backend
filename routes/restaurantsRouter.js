@@ -85,7 +85,7 @@ module.exports = function(passport, data) {
         
     })
 
-    //get restaurant by name
+/*     //get restaurant by name
     router.get('/:name', (req, res) => {
         restaurant.getByName(req.params.name, function (err, dbResult) {
             if (err) {
@@ -99,6 +99,18 @@ module.exports = function(passport, data) {
                 res.json(dbResult.rows)
                 res.status(200)
                 
+            }
+        })
+    })
+ */
+    router.get('/test', (req, res) => {
+        restaurant.testQuery(function (err, dbResult) {
+            if (err) {
+                res.json(err.stack)
+                res.status(400) 
+            } else {
+                res.json(dbResult.rows)
+                res.status(200)
             }
         })
     })
