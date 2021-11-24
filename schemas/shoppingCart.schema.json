@@ -1,0 +1,53 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema",
+    "$id": "http://example.com/example2.json",
+    "type": "object",
+    "title": "The root schema",
+    "description": "The root schema comprises the entire JSON document.",
+    "default": {},
+    "examples": [
+        {
+            "restaurantId": "niefojw38902u0309ji",
+            "itemId": "noewcnwn2",
+            "amount": 5
+        }
+    ],
+    "required": [
+        "restaurantId",
+        "itemId",
+        "amount"
+    ],
+    "properties": {
+        "restaurantId": {
+            "$id": "#/properties/restaurantId",
+            "type": "string",
+            "title": "The restaurantId schema",
+            "description": "An explanation about the purpose of this instance.",
+            "default": "",
+            "examples": [
+                "niefojw38902u0309ji"
+            ]
+        },
+        "itemId": {
+            "$id": "#/properties/itemId",
+            "type": "string",
+            "title": "The itemId schema",
+            "description": "An explanation about the purpose of this instance.",
+            "default": "",
+            "examples": [
+                "noewcnwn2"
+            ]
+        },
+        "amount": {
+            "$id": "#/properties/amount",
+            "type": "integer",
+            "title": "The amount schema",
+            "description": "An explanation about the purpose of this instance.",
+            "default": 0,
+            "examples": [
+                5
+            ]
+        }
+    },
+    "additionalProperties": false
+}
