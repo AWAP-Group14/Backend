@@ -1,0 +1,41 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema",
+    "$id": "http://example.com/example3.json",
+    "type": "object",
+    "title": "The root schema",
+    "description": "The root schema comprises the entire JSON document.",
+    "default": {},
+    "examples": [
+        {
+            "menu_name": "drinks",
+            "restaurant_name": "Mcdonalds"
+        }
+    ],
+    "required": [
+        "menu_name",
+        "restaurant_name"
+    ],
+    "properties": {
+        "menu_name": {
+            "$id": "#/properties/menu_name",
+            "type": "string",
+            "title": "The menu_name schema",
+            "description": "An explanation about the purpose of this instance.",
+            "default": "",
+            "examples": [
+                "drinks"
+            ]
+        },
+        "restaurant_name": {
+            "$id": "#/properties/restaurant_name",
+            "type": "string",
+            "title": "The restaurant_name schema",
+            "description": "An explanation about the purpose of this instance.",
+            "default": "",
+            "examples": [
+                "Mcdonalds"
+            ]
+        }
+    },
+    "additionalProperties": false
+}

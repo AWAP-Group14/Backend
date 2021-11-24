@@ -21,40 +21,52 @@ module.exports = function(passport, data) {
         // PreviousURL not yet implemented, 
     })
 
-    router.post('/signup', (req, res) => {
-        
+    router.post('/signup', async (req, res) => {
+
         const validationResult = managerValidator(req.body)
+
         if(validationResult) {
             //This should check from the database if the email already exist
-            if (data.managers.find(manager => manager.email === req.body.email) != undefined ){
-                res.status(409)
-                res.send("email already exists in the database")
-                return
-            }
-            const salt = bcrypt.genSaltSync(6)
-            const hashedPasswd = bcrypt.hashSync(req.body.password, salt)
-            
-            let managerId = uuidv4()
 
-            //This should push the data into the database
-            console.log(req.body)
-            console.log(data)
-            data.managers.push({
-                id: managerId,
-                restaurantName: req.body.restaurantName,
-                email: req.body.email,
-                password: hashedPasswd,
-                restaurantType: req.body.restaurantType,
-                openingHour: req.body.openingHour,
-                priceRange: req.body.priceRange,
-                address: req.body.address
-            })
-            res.send(managerId)
+            restaurant.getByNameAndEmail(req.body.restaurantName, req.body.email, function(err, dbResult) {
+                if (err) {
+                    response.json(err);
+                } else {
+                   let emailCheck = JSON.stringify(dbResult.rows);
+                    console.log(emailCheck +" email from db");
+
+                    console.log("emailcheck lenght "+emailCheck.length);
+
+                    if (emailCheck.length > 2){
+                        res.status(409)
+                        res.send("email or restaurant name already exists in the database")
+                        return
+                    }
+        
+            
+                    const salt = bcrypt.genSaltSync(6)
+                    const hashedPasswd = bcrypt.hashSync(req.body.password, salt)
+        
+                    //This should push the data into the database
+                    restaurant.insertRestaurant(req.body, hashedPasswd, function(err, dbResult) {
+                        if (err) {
+                            console.log(err.stack)
+                        } else {
+                            console.log(dbResult.rows)
+                        }
+                    })
+                    
+                    res.send("restaurant added")
+
+                }
+            });
+
         } else {
             res.sendStatus(400)
         }
         
     })
+
 
     router.get('/:id?',
     function(request, response) {
