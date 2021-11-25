@@ -12,6 +12,14 @@ module.exports = function(passport, data) {
 
     //Initialize JSON Validator
     const customerSchema = require('../schemas/user.schema.json')
+    ajv.addKeyword('isNotEmpty', {
+        type: 'string',
+        validate: function (schema, data) {
+          return typeof data === 'string' && data.trim() !== ''
+        },
+        errors: false
+      })
+    
     const customerValidator = ajv.compile(customerSchema)
 
     // Just an example

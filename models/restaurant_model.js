@@ -68,7 +68,7 @@ const restaurant = {
     updateItem: function (body, callback) {
         query = `UPDATE restaurant_item
                 SET item_name = $1, item_description = $2, item_image = $3, 
-                menu_id = $4, item_price = $5
+                menu_id = (SELECT id FROM restaurant_menu WHERE menu_name = $4), item_price = $5
                 RETURNING *`
         const values = [body.item_name, body.item_description, body.item_image, body.menu_name, body.item_price]
         return client.query(query, values, callback)
