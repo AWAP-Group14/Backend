@@ -7,21 +7,21 @@
     "default": {},
     "examples": [
         {
-            "restaurantId": "niefojw38902u0309ji",
+            "restaurantName": "niefojw38902u0309ji",
             "itemId": "noewcnwn2",
             "amount": 5
         }
     ],
     "required": [
-        "restaurantId",
+        "restaurantName",
         "itemId",
         "amount"
     ],
     "properties": {
-        "restaurantId": {
-            "$id": "#/properties/restaurantId",
+        "restaurantName": {
+            "$id": "#/properties/restaurantName",
             "type": "string",
-            "title": "The restaurantId schema",
+            "title": "The restaurantName schema",
             "description": "An explanation about the purpose of this instance.",
             "default": "",
             "examples": [
@@ -49,5 +49,5 @@
             ]
         }
     },
-    "additionalProperties": false
+    "additionalProperties": true
 }

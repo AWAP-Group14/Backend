@@ -1,8 +1,10 @@
 let router = require('express').Router()
 const { v4: uuidv4 } = require('uuid');
 const order = require('../models/order_model')
+const restaurant = require('../models/restaurant_model')
 const Ajv = require('ajv')
 const ajv = new Ajv()
+
 
 //Initialize JSON Validator
 const shoppingCartSchema = require('../schemas/shoppingCart.schema.json');
@@ -61,12 +63,10 @@ module.exports = function(passport, data) {
             
             //This should push the data into the database
             
-            let index = data.shoppingCart.findIndex(cart => (cart.userId === req.params.id && cart.restaurantId === req.body.restaurantId))
-            console.log(index)
+            let index = data.shoppingCart.findIndex(cart => (cart.userId === req.params.id && cart.restaurantName === req.body.restaurantName))
             if (index != -1 ) {
                 var itemExist = false
                 data.shoppingCart[index].items.forEach(item => {
-                    console.log(req.query.reduce != "1")
                     if((item.itemId == req.body.itemId) && (req.query.reduce != "1")) {
                         item.amount += req.body.amount
                         itemExist = true 
@@ -84,7 +84,7 @@ module.exports = function(passport, data) {
             } else {
                 data.shoppingCart.push({
                     userId : req.params.id,
-                    restaurantId : req.body.restaurantId,
+                    restaurantName : req.body.restaurantName,
                     items: [{
                         itemId: req.body.itemId, 
                         amount : req.body.amount 
@@ -93,17 +93,42 @@ module.exports = function(passport, data) {
             }
             res.status(200)
             res.send("Item succesfully added to the shopping cart")
-            console.log(data.shoppingCart[index])
+            // console.log(data.shoppingCart[index])
         } else {
             res.sendStatus(400)
         }
     })
 
-    router.get('/shoppingCart/:id',  (req, res) => {
+    router.get('/shoppingCart/:id', (req, res) => {
         let index = data.shoppingCart.findIndex(cart => cart.userId === req.params.id)
+        var itemsArray = []
+        var count = 0
+        var totalPrice = 0
         if (index !== -1) {
             const requestedData = data.shoppingCart[index]
-            res.json(requestedData)
+            requestedData.items.forEach(item => {
+                restaurant.getItem(item.itemId, function (err, dbResult) {
+                    if (err) {
+                        res.status(400)
+                        res.json(err.stack)
+                    } else {
+                        var result = dbResult.rows[0]
+                        result.amount = item.amount
+                        totalPrice += (result.amount * result.item_price)
+                        itemsArray.push(result)
+                        count++
+                        if(count == requestedData.items.length) {
+                            var output = {
+                                "userId" : requestedData.userId,
+                                "restaurantName" : requestedData.restaurantName, 
+                                "items" : itemsArray,
+                                "totalPrice" : totalPrice
+                            }
+                            res.json(output)
+                        }
+                    }
+                })
+            })
         } else {
             res.sendStatus(404)
         }
