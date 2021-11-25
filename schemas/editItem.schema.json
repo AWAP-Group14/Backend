@@ -1,0 +1,65 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema",
+    "$id": "http://example.com/example4.json",
+    "type": "object",
+    "title": "The root schema",
+    "description": "The root schema comprises the entire JSON document.",
+    "default": {},
+    "examples": [
+        {
+            "item_name": "Cheeseburger2",
+            "item_description": "A really delicious burger with cheese",
+            "item_image": "url",
+            "item_price": 2
+        }
+    ],
+    "required": [
+        "item_name",
+        "item_description",
+        "item_image",
+        "item_price"
+    ],
+    "properties": {
+        "item_name": {
+            "$id": "#/properties/item_name",
+            "type": "string",
+            "title": "The item_name schema",
+            "description": "An explanation about the purpose of this instance.",
+            "default": "",
+            "examples": [
+                "Cheeseburger2"
+            ]
+        },
+        "item_description": {
+            "$id": "#/properties/item_description",
+            "type": "string",
+            "title": "The item_description schema",
+            "description": "An explanation about the purpose of this instance.",
+            "default": "",
+            "examples": [
+                "A really delicious burger with cheese"
+            ]
+        },
+        "item_image": {
+            "$id": "#/properties/item_image",
+            "type": "string",
+            "title": "The item_image schema",
+            "description": "An explanation about the purpose of this instance.",
+            "default": "",
+            "examples": [
+                "url"
+            ]
+        },
+        "item_price": {
+            "$id": "#/properties/item_price",
+            "type": "integer",
+            "title": "The item_price schema",
+            "description": "An explanation about the purpose of this instance.",
+            "default": 0,
+            "examples": [
+                2
+            ]
+        }
+    },
+    "additionalProperties": false
+}
