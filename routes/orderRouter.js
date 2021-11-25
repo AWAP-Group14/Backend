@@ -36,22 +36,23 @@ module.exports = function(passport, data) {
         function(request, response) {
             if (request.params.id) {
                 order.getById(request.params.id, function(err, dbResult) {
-            if (err) {
-                response.json(err);
-            } else {
-                response.json(dbResult.rows);
-            }
-            });
+                    if (err) {
+                        response.json(err);
+                    } else {
+                        response.json(dbResult.rows);
+                    }
+                });
             } else {
                 order.getAll(function(err, dbResult) {
-                if (err) {
-                    response.json(err);
-                } else {
-                    response.json(dbResult.rows);
-                }
-            });
+                    if (err) {
+                        response.json(err);
+                    } else {
+                        response.json(dbResult.rows);
+                    }
+                });
+            }
         }
-    });
+    );
 
     router.post('/shoppingCart/:id', function (req, res) {
         

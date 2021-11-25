@@ -30,6 +30,7 @@
             "title": "The firstname schema",
             "description": "An explanation about the purpose of this instance.",
             "default": "",
+            "isNotEmpty": true,
             "examples": [
                 "Barack"
             ]
@@ -40,6 +41,7 @@
             "title": "The lastname schema",
             "description": "An explanation about the purpose of this instance.",
             "default": "",
+            "isNotEmpty": true,
             "examples": [
                 "Obama"
             ]
@@ -50,6 +52,7 @@
             "title": "The address schema",
             "description": "An explanation about the purpose of this instance.",
             "default": "",
+            "isNotEmpty": true,
             "examples": [
                 "Tutkijantie 2, 905790 Oulu"
             ]
@@ -60,6 +63,7 @@
             "title": "The phone schema",
             "description": "An explanation about the purpose of this instance.",
             "default": "",
+            "isNotEmpty": true,
             "examples": [
                 "0489852794"
             ]
@@ -70,6 +74,7 @@
             "title": "The email schema",
             "description": "An explanation about the purpose of this instance.",
             "default": "",
+            "isNotEmpty": true,
             "examples": [
                 "test@gmail.com"
             ]
@@ -80,6 +85,7 @@
             "title": "The password schema",
             "description": "An explanation about the purpose of this instance.",
             "default": "",
+            "isNotEmpty": true,
             "examples": [
                 "eiohwgn23801zrhuOefh9iWBEFIO"
             ]

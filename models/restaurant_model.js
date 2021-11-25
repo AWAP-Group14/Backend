@@ -49,6 +49,14 @@ const restaurant = {
         return client.query("INSERT INTO restaurant VALUES ($1, $2, $3, $4, $5, $6, $7, $8) RETURNING *", values, callback)
     },
 
+
+
+    //Database connection to restaurant_item table
+    getItem: function (restaurantName, callback) {
+        //Not yet implemented
+        return client.query("SELECT * FROM restaurant_item WHERE restaurant_name = $1", [restaurantName], callback)
+    },
+
     insertItem: function (id, body, callback) {
         query = `INSERT INTO restaurant_item 
                 VALUES ($1, $2, $3, $4, (SELECT id FROM restaurant_menu WHERE menu_name = $5), $6)
@@ -57,16 +65,44 @@ const restaurant = {
         return client.query(query, values, callback)
     },
 
+    updateItem: function (body, callback) {
+        query = `UPDATE restaurant_item
+                SET item_name = $1, item_description = $2, item_image = $3, 
+                menu_id = (SELECT id FROM restaurant_menu WHERE menu_name = $4), item_price = $5
+                RETURNING *`
+        const values = [body.item_name, body.item_description, body.item_image, body.menu_name, body.item_price]
+        return client.query(query, values, callback)
+    },
+
+    deleteItem: function(id, callback) {
+        return client.query("DELETE FROM restaurant_item WHERE id = $1", [id], callback)
+    },
+
+
+
+    //Database connection to restaurant_menu table
+    getMenu: function (restaurantName, callback) {
+        return client.query("SELECT * FROM restaurant_menu LEFT OUTER JOIN restaurant_item ON restaurant_menu.id = restaurant_item.menu_id WHERE restaurant_name = $1", [restaurantName], callback)
+    },
+
     insertMenu: function (id, body, callback) {
-        query =  `INSERT INTO restaurant_menu (id, menu_name, restaurant_name)
+        query = `INSERT INTO restaurant_menu (id, menu_name, restaurant_name)
                 VALUES ($1, $2, (SELECT restaurant_name FROM restaurant WHERE restaurant_name = $3))
                 RETURNING *`
         const values = [id, body.menu_name, body.restaurant_name]
         return client.query(query, values, callback)
     },
 
-    getMenu: function (restaurantName, callback) {
-        return client.query("SELECT * FROM restaurant_menu WHERE restaurant_name = $1", [restaurantName], callback)
+    updateMenu: function (body, callback) {
+        query = `UPDATE restaurant_menu
+                SET menu_name = $1, restaurant_name = $2
+                RETURNING *`
+        const values = [body.menu_name, body.restaurant_name]
+        return client.query(query, values, callback)
+    },
+
+    deleteMenu: function (id, callback) {
+        return client.query("DELETE FROM restaurant_menu WHERE id= $1", [id], callback)
     }
 }
 module.exports = restaurant
