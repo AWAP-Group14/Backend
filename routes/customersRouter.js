@@ -25,6 +25,13 @@ module.exports = function(passport, data) {
     // Just an example
     router.get('/',  (req, res) => {
         //i dont think this page need to be handled by the backend because no data is required
+        customer.getAll(function (err, dbResult){
+            if (err) {
+                response.json(err);
+            } else {
+                response.json(dbResult.rows);
+            }
+        })
         res.send("It works")
     })
 
