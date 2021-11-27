@@ -56,8 +56,8 @@ const restaurant = {
 
 
     //Database connection to restaurant_item table
-    getItem: async function (id, callback) {
-        return await client.query("SELECT * FROM restaurant_item WHERE id = $1", [id], callback)
+    getItem: function (id, callback) {
+        return client.query("SELECT * FROM restaurant_item WHERE id = $1", [id], callback)
     },
 
     insertItem: function (id, body, callback) {

@@ -1,0 +1,53 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema",
+    "$id": "http://example.com/example6.json",
+    "type": "object",
+    "title": "The root schema",
+    "description": "The root schema comprises the entire JSON document.",
+    "default": {},
+    "examples": [
+        {
+            "order_comment": "Test-comment",
+            "order_status": 1,
+            "delivery_type": 2
+        }
+    ],
+    "required": [
+        "order_comment",
+        "order_status",
+        "delivery_type"
+    ],
+    "properties": {
+        "order_comment": {
+            "$id": "#/properties/order_comment",
+            "type": "string",
+            "title": "The order_comment schema",
+            "description": "An explanation about the purpose of this instance.",
+            "default": "",
+            "examples": [
+                "Test-comment"
+            ]
+        },
+        "order_status": {
+            "$id": "#/properties/order_status",
+            "type": "integer",
+            "title": "The order_status schema",
+            "description": "An explanation about the purpose of this instance.",
+            "default": 0,
+            "examples": [
+                1
+            ]
+        },
+        "delivery_type": {
+            "$id": "#/properties/delivery_type",
+            "type": "integer",
+            "title": "The delivery_type schema",
+            "description": "An explanation about the purpose of this instance.",
+            "default": 0,
+            "examples": [
+                2
+            ]
+        }
+    },
+    "additionalProperties": true
+}
