@@ -8,20 +8,47 @@ module.exports = function(passport, data) {
     const { v4: uuidv4 } = require('uuid');
     const Ajv = require('ajv')
     const ajv = new Ajv()
-    const client = require('../database');
+    const multer = require('multer')
+    const restaurant = require('../models/restaurant_model')
+
+    var cloudinary = require('cloudinary').v2;
+    var { CloudinaryStorage } = require('multer-storage-cloudinary');
+
+    //initialize cloudinaryStorage
+    var storage = new CloudinaryStorage({
+        cloudinary: cloudinary,
+        folder: 'images',
+        allowedFormats: ['jpg', 'png']
+    })
+    const parser = multer({ storage: storage });
 
     //Initialize JSON Validator
     const managerSchema = require('../schemas/manager.schema.json')
+    ajv.addKeyword('isNotEmpty', {
+        type: 'string',
+        validate: function (schema, data) {
+          return typeof data === 'string' && data.trim() !== ''
+        },
+        errors: false
+      })
+    
     const managerValidator = ajv.compile(managerSchema)
 
 
     router.post('/login', passport.authenticate('basic', {session: false}), (req, res) => {
-        const token = require('../authentication').sign(req.user.id)
+        const token = require('../managerAuthentication').sign(req.user.id)
         res.json({token : token})
         // PreviousURL not yet implemented, 
     })
 
-    router.post('/signup', async (req, res) => {
+    
+    //upload image
+    router.post('/upload', parser.single('image'), function(req, res){
+        console.log(req.file.path);
+        res.json(req.file.path)
+    })
+
+    router.post('/signup', parser.single('image'), async (req, res) => {
 
         const validationResult = managerValidator(req.body)
 

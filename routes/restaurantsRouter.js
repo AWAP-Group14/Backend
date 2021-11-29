@@ -6,6 +6,7 @@ module.exports = function(passport, data) {
     const Ajv = require('ajv')
     const ajv = new Ajv()
     const restaurant = require('../models/restaurant_model')
+    
 
     //Initialize JSON Validator
     const menuSchema = require('../schemas/menu.schema.json')
@@ -117,6 +118,8 @@ module.exports = function(passport, data) {
             }
         })
     })
+
+
 
     router.post('/:name/item', (req, res) => {
         
