@@ -17,6 +17,7 @@ var data = require('./data')
 // This funtion will configure all authentication stuff
 // including http basic and jwt using passport
 require('./authentication').setup(passport, data)
+require('./managerAuthentication').setup(passport, data)
 
 
 // json parsing middleware (bodyparser is deprecated)

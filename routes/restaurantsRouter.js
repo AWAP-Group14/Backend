@@ -5,18 +5,8 @@ module.exports = function(passport, data) {
     const { v4: uuidv4 } = require('uuid');
     const Ajv = require('ajv')
     const ajv = new Ajv()
-    const multer = require('multer')
     const restaurant = require('../models/restaurant_model')
-    var cloudinary = require('cloudinary').v2;
-    var { CloudinaryStorage } = require('multer-storage-cloudinary');
-
-    //initialize cloudinaryStorage
-    var storage = new CloudinaryStorage({
-        cloudinary: cloudinary,
-        folder: 'images',
-        allowedFormats: ['jpg', 'png']
-    })
-    const parser = multer({ storage: storage });
+    
 
     //Initialize JSON Validator
     const menuSchema = require('../schemas/menu.schema.json')
@@ -129,12 +119,6 @@ module.exports = function(passport, data) {
         })
     })
 
-
-    //upload image
-    router.post('/upload', parser.single('image'), function(req, res){
-        console.log(req.file);
-        res.json(req.file)
-    })
 
 
     router.post('/:name/item', (req, res) => {
