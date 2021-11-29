@@ -59,15 +59,16 @@ module.exports = function(passport, data) {
         }
     );
 
-    router.post('/', function(req, res) {
-        
+    router.post('/', function(req, res) { 
         const validationResult = orderValidator(req.body)
         if(validationResult) {
             let orderId = uuidv4()
             let index = data.shoppingCart.findIndex(cart => (cart.userId === req.body.customer_id))
             if (index != -1) {
                 var items =  JSON.stringify(data.shoppingCart[index].items)
-                order.insertOrder(orderId, items, req.body, function(err, dbResult) {
+                var totalPrice = data.shoppingCart[index].totalPrice
+                console.log(totalPrice)
+                order.insertOrder(orderId, items, totalPrice, req.body, function(err, dbResult) {
                     if (err) {
                         res.status(400)
                         res.json(err.stack);
@@ -75,6 +76,7 @@ module.exports = function(passport, data) {
                         res.json(dbResult.rows);
                     }
                 })
+                data.shoppingCart.splice(index, 1)
             } else {
                 res.status(400)
                 res.send("Shopping cart is empty, order cannot be processed")
@@ -82,7 +84,6 @@ module.exports = function(passport, data) {
         } else {
             res.sendStatus(400)
         }
-        
     })
 
     router.put('/:id', function (req, res) {
@@ -131,6 +132,9 @@ module.exports = function(passport, data) {
         }
     })
 
+    function getItemInfo() {
+
+    }
 
     //------------------SHOPPING CART-------------------------
     router.post('/shoppingCart/:id', function (req, res) {
@@ -138,46 +142,67 @@ module.exports = function(passport, data) {
         const validationResult = shoppingCartValidator(req.body)
         if(validationResult) {
             var indexToDelete = -1
+            var itemsArray = []
+            var totalPrice = 0
             let index = data.shoppingCart.findIndex(cart => (cart.userId === req.params.id && cart.restaurantName === req.body.restaurantName))
             if (index != -1 ) {
                 var itemExist = false
-                data.shoppingCart[index].items.forEach((item, itemIndex) => {
-                    if((item.itemId == req.body.itemId) && (req.query.reduce != "1")) {
-                        item.amount += req.body.amount
-                        itemExist = true 
-                    } else if ((item.itemId == req.body.itemId) && (req.query.reduce == "1")){
-                        item.amount -= req.body.amount
-                        itemExist = true 
-                        if(item.amount < 1) {
-                            indexToDelete = itemIndex
-                        }
-                    }
-                })
-                if((!itemExist) && (req.query.reduce != "1")) {
-                    data.shoppingCart[index].items.push({
-                        itemId: req.body.itemId,
-                        amount: req.body.amount
-                    })
-                }
-                if(indexToDelete != -1) {
-                    data.shoppingCart[index].items.splice(indexToDelete, 1)
-                }
-                res.status(200)
-                res.send("Item succesfully added or deleted to an existing the shopping cart")
-            } else {
-                
                 restaurant.getItem(req.body.itemId, function (err, dbResult) {
                     if (err) {
                         res.status(400)
                         res.json(err.stack);
                     } else if (dbResult.rows.length > 0) {
+                        var result = dbResult.rows[0]
+                        result.amount = req.body.amount
+                        totalPrice = (result.amount * result.item_price)
+                        itemsArray.push(result)
+                        
+                        //Adding the right amount
+                        data.shoppingCart[index].items.forEach((item, itemIndex) => {
+                            if((item.id == req.body.itemId) && (req.query.reduce != "1")) {
+                                item.amount += req.body.amount
+                                itemExist = true 
+                            } else if ((item.id == req.body.itemId) && (req.query.reduce == "1")){
+                                item.amount -= req.body.amount
+                                itemExist = true 
+                                if(item.amount < 1) {
+                                    indexToDelete = itemIndex
+                                }
+                            }
+                        })
+                        if((!itemExist) && (req.query.reduce != "1")) {
+                            data.shoppingCart[index].items.push(itemsArray[0])
+                            data.shoppingCart[index].totalPrice += totalPrice
+                        } else if ((itemExist) && (req.query.reduce == "1")){
+                            data.shoppingCart[index].totalPrice -= totalPrice
+                        }
+                        if(indexToDelete != -1) {
+                            data.shoppingCart[index].items.splice(indexToDelete, 1)
+                        }
+                        res.status(200)
+                        res.send("Item succesfully added or deleted to an existing the shopping cart")
+                        
+                    } else {
+                        res.status(404)
+                        res.send("Item ID does not exist")
+                    }
+                })
+
+            } else {
+                restaurant.getItem(req.body.itemId, function (err, dbResult) {
+                    if (err) {
+                        res.status(400)
+                        res.json(err.stack);
+                    } else if (dbResult.rows.length > 0) {
+                        var result = dbResult.rows[0]
+                        result.amount = req.body.amount
+                        totalPrice += (result.amount * result.item_price)
+                        itemsArray.push(result)
                         data.shoppingCart.push({
                             userId : req.params.id,
                             restaurantName : req.body.restaurantName,
-                            items: [{
-                                itemId: req.body.itemId, 
-                                amount : req.body.amount 
-                            }]    
+                            items: itemsArray,
+                            totalPrice : totalPrice   
                         })
                         res.status(200)
                         res.send("Item succesfully added to a new shopping cart")
@@ -197,32 +222,9 @@ module.exports = function(passport, data) {
         let index = data.shoppingCart.findIndex(cart => cart.userId === req.params.id)
         var itemsArray = []
         var count = 0
-        var totalPrice = 0
         if (index !== -1) {
-            const requestedData = data.shoppingCart[index]
-            requestedData.items.forEach(item => {
-                restaurant.getItem(item.itemId, function (err, dbResult) {
-                    if (err) {
-                        res.status(400)
-                        res.json(err.stack)
-                    } else {
-                        var result = dbResult.rows[0]
-                        result.amount = item.amount
-                        totalPrice += (result.amount * result.item_price)
-                        itemsArray.push(result)
-                        count++
-                        if(count == requestedData.items.length) {
-                            var output = {
-                                "userId" : requestedData.userId,
-                                "restaurantName" : requestedData.restaurantName, 
-                                "items" : itemsArray,
-                                "totalPrice" : totalPrice
-                            }
-                            res.json(output)
-                        }
-                    }
-                })
-            })
+            res.status(200)
+            res.json(data.shoppingCart[index])
         } else {
             res.sendStatus(404)
         }
@@ -238,7 +240,5 @@ module.exports = function(passport, data) {
             res.sendStatus(404)
         }
     })
-
     return router;
-
 }
