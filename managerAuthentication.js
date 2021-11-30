@@ -1,4 +1,4 @@
-const jwt = require('jsonwebtoken')
+/* const jwt = require('jsonwebtoken')
 const JwtStrategy = require('passport-jwt').Strategy
 const ExtractJwt = require('passport-jwt').ExtractJwt
 const BasicStrategy = require('passport-http').BasicStrategy;
@@ -63,3 +63,4 @@ module.exports = {
     setup,
     sign
 }
+ */
