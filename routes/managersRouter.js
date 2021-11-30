@@ -35,7 +35,7 @@ module.exports = function(passport, data) {
     const managerValidator = ajv.compile(managerSchema)
 
 
-    router.post('/login', passport.authenticate(['manager','basic'], {session: false}), (req, res) => {
+    router.post('/login', passport.authenticate('manager', {session: false}), (req, res) => {
         console.log(req.user);
         const token = require('../authentication').signRestaurant(true)
         res.json({token : token})

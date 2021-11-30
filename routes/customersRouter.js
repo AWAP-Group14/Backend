@@ -30,7 +30,7 @@ module.exports = function(passport, data) {
     })
 
     // OK
-    router.post('/login', passport.authenticate(['customer','basic'], {session: false}), (req, res) => {
+    router.post('/login', passport.authenticate('customer', {session: false}), (req, res) => {
         console.log(req.user);
         const token = require('../authentication').sign(req.user, false)
         res.json({token : token})
