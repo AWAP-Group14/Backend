@@ -9,11 +9,8 @@ module.exports = function(passport, data) {
     
 
     //Initialize JSON Validator
-    const menuSchema = require('../schemas/menu.schema.json')
-    const menuValidator = ajv.compile(menuSchema)
-
-    const itemSchema = require('../schemas/item.schema.json')
-    const itemValidator = ajv.compile(itemSchema)
+    const managerSchema = require('../schemas/manager.schema.json')
+    const managerValidator = ajv.compile(managerSchema)
 
     const editItemSchema = require('../schemas/item.schema.json')
     const editItemValidator = ajv.compile(editItemSchema)
@@ -114,6 +111,7 @@ module.exports = function(passport, data) {
             } else {
                 res.status(200)
                 res.json(dbResult.rows)
+
                 
             }
         })
@@ -121,11 +119,15 @@ module.exports = function(passport, data) {
 
 
 
+
+
+
     router.post('/:name/item', (req, res) => {
         
-        const validationResult = itemValidator(req.body)
+        const validationResult = managerValidator(req.body)
 
         if(validationResult) {
+
             let itemId = uuidv4()
             restaurant.insertItem(itemId, req.body, function (err, dbResult) {
                 if (err) {
@@ -192,8 +194,15 @@ module.exports = function(passport, data) {
     router.post("/:name/menu", (req, res) => {
         const validationResult = menuValidator(req.body)
 
-        if(validationResult) {
+            if (validationResult) {
+                
             
+                    if (emailCheck.length > 2){
+                        res.status(409)
+                        res.send("email or restaurant name already exists in the database")
+                        return
+                    }
+        
             let menuId = uuidv4()
             restaurant.insertMenu(menuId, req.body, function (err, dbResult) {
                 if (err) {
@@ -231,6 +240,7 @@ module.exports = function(passport, data) {
         } else {
             res.sendStatus(400)
         }
+        
     })
 
     router.delete("/:name/menu/:id", (req, res) => {
@@ -245,6 +255,7 @@ module.exports = function(passport, data) {
             }
         })
     })
+
 
     return router;
 

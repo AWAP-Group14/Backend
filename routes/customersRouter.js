@@ -23,21 +23,16 @@ module.exports = function(passport, data) {
     const customerValidator = ajv.compile(customerSchema)
 
     // Just an example
-    router.get('/',  (req, res) => {
+    router.get('/',  passport.authenticate ('jwt' , {session: false} ),(req, res) => {
         //i dont think this page need to be handled by the backend because no data is required
-        customer.getAll(function (err, dbResult){
-            if (err) {
-                response.json(err);
-            } else {
-                response.json(dbResult.rows);
-            }
-        })
         res.send("It works")
+        console.log(req.user);
     })
 
     // OK
-    router.post('/login', passport.authenticate('basic', {session: false}), (req, res) => {
-        const token = require('../authentication').sign(req.user.id)
+    router.post('/login', passport.authenticate(['customer','basic'], {session: false}), (req, res) => {
+        console.log(req.user);
+        const token = require('../authentication').sign(req.user, false)
         res.json({token : token})
         // Previous URL not yet implemented
     })
