@@ -12,8 +12,15 @@ module.exports = function(passport, data) {
     const managerSchema = require('../schemas/manager.schema.json')
     const managerValidator = ajv.compile(managerSchema)
 
+    const menuSchema = require('../schemas/menu.schema.json')
+    const menuValidator = ajv.compile(menuSchema)
+
     const editItemSchema = require('../schemas/item.schema.json')
     const editItemValidator = ajv.compile(editItemSchema)
+
+    
+    const itemSchema = require('../schemas/item.schema.json')
+    const itemValidator = ajv.compile(itemSchema)
 
     // const customerSchema = require('../schemas/user.schema.json')
     // const customerValidator = ajv.compile(customerSchema)
@@ -100,13 +107,15 @@ module.exports = function(passport, data) {
 
     //get restaurant by name
     router.get('/:name', (req, res) => {
-        restaurant.getByName(req.params.name, function (err, dbResult) {
+        
+        restaurant.getByName(req.params.name.toUpperCase(), function (err, dbResult) {
             if (err) {
                 res.status(400)
                 res.json(err.stack)
                 
             } else if (dbResult.rows.length == 0){
                 res.status(404)
+                console.log(req.params.name.toUpperCase())
                 res.json("Restaurant not found")
             } else {
                 res.status(200)
@@ -124,7 +133,7 @@ module.exports = function(passport, data) {
 
     router.post('/:name/item', (req, res) => {
         
-        const validationResult = managerValidator(req.body)
+        const validationResult = itemValidator(req.body)
 
         if(validationResult) {
 
@@ -195,28 +204,19 @@ module.exports = function(passport, data) {
         const validationResult = menuValidator(req.body)
 
             if (validationResult) {
-                
-            
-                    if (emailCheck.length > 2){
-                        res.status(409)
-                        res.send("email or restaurant name already exists in the database")
-                        return
+                let menuId = uuidv4()
+                restaurant.insertMenu(menuId, req.body, function (err, dbResult) {
+                    if (err) {
+                        res.status(404) 
+                        res.send("Restaurant name not found")
+                    } else {
+                        res.status(200)
+                        res.json(dbResult.rows)  
                     }
-        
-            let menuId = uuidv4()
-            restaurant.insertMenu(menuId, req.body, function (err, dbResult) {
-                if (err) {
-                    res.status(404) 
-                    res.send("Restaurant name not found")
-                } else {
-                    res.status(200)
-                    res.json(dbResult.rows)
-                    
-                }
-            })
-        } else {
-            res.sendStatus(400)
-        }
+                })
+            } else {
+                res.sendStatus(400)
+            }
     })
 
     router.put("/:name/menu/:id", (req, res) => {
