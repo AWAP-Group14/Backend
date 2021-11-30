@@ -8,11 +8,8 @@ module.exports = function(passport, data) {
     const restaurant = require('../models/restaurant_model')
 
     //Initialize JSON Validator
-    const menuSchema = require('../schemas/menu.schema.json')
-    const menuValidator = ajv.compile(menuSchema)
-
-    const itemSchema = require('../schemas/item.schema.json')
-    const itemValidator = ajv.compile(itemSchema)
+    const managerSchema = require('../schemas/manager.schema.json')
+    const managerValidator = ajv.compile(managerSchema)
 
     // const customerSchema = require('../schemas/user.schema.json')
     // const customerValidator = ajv.compile(customerSchema)
@@ -101,86 +98,61 @@ module.exports = function(passport, data) {
             } else {
                 res.json(dbResult.rows)
                 res.status(200)
+                
             }
         })
     })
 
-    router.post('/:name/item', (req, res) => {
+    router.post('/signup', async (req, res) => {
+
         
-        const validationResult = itemValidator(req.body)
+        const validationResult = managerValidator(req.body)
 
         if(validationResult) {
-            let itemId = uuidv4()
-            restaurant.insertItem(itemId, req.body, function (err, dbResult) {
+            //This should check from the database if the email already exist
+
+            restaurant.getByNameAndEmail(req.body.restaurantName, req.body.email, function(err, dbResult) {
                 if (err) {
-                    res.json(err.stack)
-                    res.status(400) 
+                    response.json(err);
                 } else {
-                    res.json(dbResult.rows)
-                    res.status(200)
-                }
-            })
-        }
-    })
+                   let emailCheck = JSON.stringify(dbResult.rows);
+                    console.log(emailCheck +" email from db");
 
-    router.put('/:name/item', (req, res) => {
-        const validationResult = itemValidator(req.body)
+                    console.log("emailcheck lenght "+emailCheck.length);
 
-        if(validationResult) {
-            restaurant.updateItem(req.body, function (err, dbResult) {
-                if (err) {
-                    res.json(err.stack)
-                    res.status(400) 
-                } else {
-                    res.json(dbResult.rows)
-                    res.status(200)
-                }
-            })
-        }
-    })
-
-    router.delete('/:name/item/:id', (req, res) => {
+                    if (emailCheck.length > 2){
+                        res.status(409)
+                        res.send("email or restaurant name already exists in the database")
+                        return
+                    }
         
-    })
-
-    router.post("/:name/menu", (req, res) => {
-        const validationResult = itemValidator(req.body)
-
-        if(validationResult) {
             
-            let menuId = uuidv4()
-            restaurant.insertMenu(menuId, req.body, function (err, dbResult) {
-                if (err) {
-                    res.status(400) 
-                    res.json(err.stack)
-                } else {
-                    res.json(dbResult.rows)
-                    res.status(200)
-                }
-            })
-        }
-    })
-
-    router.put("/:name/menu", (req, res) => {
+                    const salt = bcrypt.genSaltSync(6)
+                    const hashedPasswd = bcrypt.hashSync(req.body.password, salt)
         
-        const validationResult = itemValidator(req.body)
+                    let customerId = uuidv4()
+        
+                    //This should push the data into the database
+                    restaurant.insertRestaurant(req.body, hashedPasswd, function(err, dbResult) {
+                        if (err) {
+                            console.log(err.stack)
+                        } else {
+                            console.log(dbResult.rows)
+                        }
+                    })
+                    
+                    res.send("restaurant added")
 
-        if(validationResult) {
-            restaurant.updateMenu(req.body, function (err, dbResult) {
-                if (err) {
-                    res.status(400) 
-                    res.json(err.stack)
-                } else {
-                    res.json(dbResult.rows)
-                    res.status(200)
                 }
-            })
+            });
+
+        } else {
+            res.sendStatus(400)
         }
+        
     })
 
-    router.delete("/:name/menu/:id", (req, res) => {
-    
-    })
+
 
     return router;
 
