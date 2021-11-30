@@ -49,8 +49,8 @@ let setup = (passport, data) => {
                     console.log(err);
                 } else {
                    let emailCheck = JSON.stringify(dbResult.rows);
-                   const userId = dbResult.rows[0].id
                     if (emailCheck.length > 2){
+                        const userId = dbResult.rows[0].id
                         if (bcrypt.compareSync(password, dbResult.rows[0].customer_password)){
                             done(null, userId)
                         } else {
