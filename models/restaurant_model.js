@@ -18,7 +18,7 @@ const restaurant = {
                 restaurant_price_level, menu_name, item_name, item_description, item_image, menu_id, item_price
                 FROM restaurant LEFT OUTER JOIN restaurant_menu 
                 ON restaurant.restaurant_name = restaurant_menu.restaurant_name 
-                AND restaurant.restaurant_name = $1 
+                AND UPPER(restaurant.restaurant_name) = $1 
                 INNER JOIN restaurant_item on restaurant_menu.id = restaurant_item.menu_id`
         return client.query(query, [name], callback)
     },
@@ -49,10 +49,6 @@ const restaurant = {
     },
 
     insertRestaurant: function(body, hashedPassword, callback) {
-        query = `CREATE VIEW category_item_view AS
-        SELECT restaurant_menu.menu_name, restaurant_menu.restaurant_name, restaurant_item.id as item_id, restaurant_item.item_name,
-        restaurant_item.item_description, restaurant_item.item_image, restaurant_item.item_price, restaurant_item.menu_id
-        FROM restaurant_menu left outer join restaurant_item ON restaurant_menu.id = restaurant_item.menu_id`
         const values = [body.restaurantName, body.address, body.openingHour, body.image, body.email, hashedPassword, body.restaurantType, body.priceRange]
         return client.query("INSERT INTO restaurant VALUES ($1, $2, $3, $4, $5, $6, $7, $8) RETURNING *", values, callback)
     },
@@ -66,9 +62,9 @@ const restaurant = {
 
     insertItem: function (id, body, callback) {
         query = `INSERT INTO restaurant_item 
-                VALUES ($1, $2, $3, $4, (SELECT id FROM restaurant_menu WHERE menu_name = $5), $6)
+                VALUES ($1, $2, $3, $4, (SELECT id FROM restaurant_menu WHERE UPPER(menu_name) = $5), $6)
                 RETURNING *`
-        const values = [id, body.item_name, body.item_description, body.item_image, body.menu_name, body.item_price]
+        const values = [id, body.item_name, body.item_description, body.item_image, body.menu_name.toUpperCase(), body.item_price]
         return client.query(query, values, callback)
     },
 
@@ -89,14 +85,14 @@ const restaurant = {
 
     //Database connection to restaurant_menu table
     getMenu: function (restaurantName, callback) {
-        return client.query("SELECT * FROM restaurant_menu LEFT OUTER JOIN restaurant_item ON restaurant_menu.id = restaurant_item.menu_id WHERE restaurant_name = $1", [restaurantName], callback)
+        return client.query("SELECT * FROM restaurant_menu LEFT OUTER JOIN restaurant_item ON restaurant_menu.id = restaurant_item.menu_id WHERE UPPER(restaurant_name) = $1", [restaurantName.toUpperCase()], callback)
     },
 
     insertMenu: function (id, body, callback) {
         query = `INSERT INTO restaurant_menu (id, menu_name, restaurant_name)
-                VALUES ($1, $2, (SELECT restaurant_name FROM restaurant WHERE restaurant_name = $3))
+                VALUES ($1, $2, (SELECT restaurant_name FROM restaurant WHERE UPPER(restaurant_name) = $3))
                 RETURNING *`
-        const values = [id, body.menu_name, body.restaurant_name]
+        const values = [id, body.menu_name, body.restaurant_name.toUpperCase()]
         return client.query(query, values, callback)
     },
 
