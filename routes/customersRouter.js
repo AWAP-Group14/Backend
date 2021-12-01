@@ -37,6 +37,12 @@ module.exports = function(passport, data) {
         // Previous URL not yet implemented
     })
 
+    router.post('/authenticate', passport.authenticate('jwt', {session: false}), (req, res) => {
+        res.sendStatus(200)
+    })
+
+
+
     /* 
     There is still a problem with inputing data to the database, field address and emails still have wrong entry inside. 
     Emails are added in address and address in email.
