@@ -37,7 +37,7 @@ module.exports = function(passport, data) {
         // Previous URL not yet implemented
     })
 
-    router.post('/authenticate', passport.authenticate('jwt', {session: false}), (req, res) => {
+    router.get('/authenticate/', passport.authenticate('jwt', {session: false}), (req, res) => {
         res.sendStatus(200)
     })
 

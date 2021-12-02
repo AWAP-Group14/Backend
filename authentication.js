@@ -21,8 +21,8 @@ const options = {
     secretOrKey : secrets
 }
 
-let sign = (userId, isManager) => {
-    return jwt.sign({ userId: userId, isManager: isManager}, secrets)
+let sign = (userInfo, isManager) => {
+    return jwt.sign({ userId: userInfo.id, isManager: isManager, userInfo: userInfo}, secrets)
 }
 
 let signRestaurant = (isManager) => {
@@ -38,7 +38,7 @@ let setup = (passport, data) => {
 
     // Users id is available in req.user.userI
     passport.use(new JwtStrategy(options, (payload, done) => {
-        done(null, {userId: payload.userId, isManager: payload.isManager})
+        done(null, {userId: payload.userInfo.id, isManager: payload.isManager, userInfo: userInfo})
     }))
 
     // Set up BasicStrategy
@@ -50,9 +50,9 @@ let setup = (passport, data) => {
                 } else {
                    let emailCheck = JSON.stringify(dbResult.rows);
                     if (emailCheck.length > 2){
-                        const userId = dbResult.rows[0].id
+                        const userInfo = dbResult.rows[0]
                         if (bcrypt.compareSync(password, dbResult.rows[0].customer_password)){
-                            done(null, userId)
+                            done(null, userInfo)
                         } else {
                             done(null, false)
                         }
