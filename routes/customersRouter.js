@@ -25,7 +25,7 @@ module.exports = function(passport, data) {
     // Just an example
     router.get('/',  passport.authenticate ('jwt' , {session: false} ),(req, res) => {
         //i dont think this page need to be handled by the backend because no data is required
-        res.send("It works")
+        res.send("It works")    
         console.log(req.user);
     })
 
@@ -38,7 +38,7 @@ module.exports = function(passport, data) {
     })
 
     router.get('/authenticate/', passport.authenticate('jwt', {session: false}), (req, res) => {
-        res.sendStatus(200)
+        res.send(200)
     })
 
 
@@ -103,8 +103,6 @@ module.exports = function(passport, data) {
         }
         
     })
-
-    
 
     router.get('/:id?',
     function(request, response) {
