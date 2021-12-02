@@ -13,6 +13,8 @@ const orderSchema = require('../schemas/order.schema.json');
 const orderValidator = ajv.compile(orderSchema)
 const editOrderSchema = require('../schemas/editOrder.schema.json');
 const editOrderValidator = ajv.compile(editOrderSchema)
+const editShoppingCartSchema = require('../schemas/editShoppingCart.schema.json');
+const editShoppingCartValidator = ajv.compile(editShoppingCartSchema)
 
 module.exports = function(passport, data) {
 
@@ -132,10 +134,6 @@ module.exports = function(passport, data) {
         }
     })
 
-    function getItemInfo() {
-
-    }
-
     //------------------SHOPPING CART-------------------------
     router.post('/shoppingCart/:id', function (req, res) {
         
@@ -231,6 +229,23 @@ module.exports = function(passport, data) {
         }
     })
 
+    router.put('/shoppingCart/:id', (req, res) => {
+        const validationResult = editShoppingCartValidator(req.body)
+        if(validationResult) {
+            let index = data.shoppingCart.findIndex(cart => cart.userId === req.params.id)
+            if (index !== -1) {
+                data.shoppingCart[index].items = req.body.items
+                data.shoppingCart[index].totalPrice = req.body.totalPrice
+                res.status(200)
+                res.send("Shopping cart succesfully updated")
+            } else {
+                res.sendStatus(404)
+            }
+        } else {
+            res.sendStatus(400)
+        }
+    })
+
     router.delete('/shoppingCart/:id', (req, res) => {
         let index = data.shoppingCart.findIndex(cart => cart.userId === req.params.id)
         if (index !== -1) {
@@ -241,5 +256,7 @@ module.exports = function(passport, data) {
             res.sendStatus(404)
         }
     })
+
+
     return router;
 }
