@@ -162,20 +162,21 @@ module.exports = function(passport, data) {
                             if((item.id == req.body.itemId) && (req.query.reduce != "1")) {
                                 item.amount += req.body.amount
                                 itemExist = true 
+                                data.shoppingCart[index].totalPrice += (req.body.amount * item.item_price)
                             } else if ((item.id == req.body.itemId) && (req.query.reduce == "1")){
                                 item.amount -= req.body.amount
                                 itemExist = true 
+                                data.shoppingCart[index].totalPrice -= (req.body.amount * item.item_price)
                                 if(item.amount < 1) {
                                     indexToDelete = itemIndex
                                 }
                             }
                         })
                         if((!itemExist) && (req.query.reduce != "1")) {
-                            data.shoppingCart[index].items.push(itemsArray[0])
+                            data.shoppingCart[index].items.push(result)
                             data.shoppingCart[index].totalPrice += totalPrice
-                        } else if ((itemExist) && (req.query.reduce == "1")){
-                            data.shoppingCart[index].totalPrice -= totalPrice
                         }
+
                         if(indexToDelete != -1) {
                             data.shoppingCart[index].items.splice(indexToDelete, 1)
                         }
