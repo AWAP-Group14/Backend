@@ -14,6 +14,7 @@ const restaurant = {
     },
 
     getByName: function(name, callback) {
+
         query = `SELECT restaurant.restaurant_name, restaurant_address, restaurant_operating_hours, restaurant_image, restaurant_type, 
                 restaurant_price_level, menu_name, restaurant_item.id, item_name, item_description, item_image, menu_id, item_price
                 FROM restaurant LEFT OUTER JOIN restaurant_menu 
