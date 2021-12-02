@@ -1,0 +1,166 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema",
+    "$id": "http://example.com/example7.json",
+    "type": "object",
+    "title": "The root schema",
+    "description": "The root schema comprises the entire JSON document.",
+    "default": {},
+    "examples": [
+        {
+            "items": [
+                {
+                    "id": "3e514132-95db-43c3-9941-af54b567a8fc",
+                    "item_name": "Big Mac",
+                    "item_description": "A really delicious burger with two layers of meat",
+                    "item_image": "url",
+                    "menu_id": "3b81c8d4-1afe-4899-b3ea-42d4ee6d0e1d",
+                    "item_price": 5,
+                    "amount": 1
+                }
+            ],
+            "totalPrice": 5
+        }
+    ],
+    "required": [
+        "items",
+        "totalPrice"
+    ],
+    "properties": {
+        "items": {
+            "$id": "#/properties/items",
+            "type": "array",
+            "title": "The items schema",
+            "description": "An explanation about the purpose of this instance.",
+            "default": [],
+            "examples": [
+                [
+                    {
+                        "id": "3e514132-95db-43c3-9941-af54b567a8fc",
+                        "item_name": "Big Mac",
+                        "item_description": "A really delicious burger with two layers of meat",
+                        "item_image": "url",
+                        "menu_id": "3b81c8d4-1afe-4899-b3ea-42d4ee6d0e1d",
+                        "item_price": 5,
+                        "amount": 1
+                    }
+                ]
+            ],
+            "items": {
+                "$id": "#/properties/items/items",
+                "anyOf": [
+                    {
+                        "$id": "#/properties/items/items/anyOf/0",
+                        "type": "object",
+                        "title": "The first anyOf schema",
+                        "description": "An explanation about the purpose of this instance.",
+                        "default": {},
+                        "examples": [
+                            {
+                                "id": "3e514132-95db-43c3-9941-af54b567a8fc",
+                                "item_name": "Big Mac",
+                                "item_description": "A really delicious burger with two layers of meat",
+                                "item_image": "url",
+                                "menu_id": "3b81c8d4-1afe-4899-b3ea-42d4ee6d0e1d",
+                                "item_price": 5,
+                                "amount": 1
+                            }
+                        ],
+                        "required": [
+                            "id",
+                            "item_name",
+                            "item_description",
+                            "item_image",
+                            "menu_id",
+                            "item_price",
+                            "amount"
+                        ],
+                        "properties": {
+                            "id": {
+                                "$id": "#/properties/items/items/anyOf/0/properties/id",
+                                "type": "string",
+                                "title": "The id schema",
+                                "description": "An explanation about the purpose of this instance.",
+                                "default": "",
+                                "examples": [
+                                    "3e514132-95db-43c3-9941-af54b567a8fc"
+                                ]
+                            },
+                            "item_name": {
+                                "$id": "#/properties/items/items/anyOf/0/properties/item_name",
+                                "type": "string",
+                                "title": "The item_name schema",
+                                "description": "An explanation about the purpose of this instance.",
+                                "default": "",
+                                "examples": [
+                                    "Big Mac"
+                                ]
+                            },
+                            "item_description": {
+                                "$id": "#/properties/items/items/anyOf/0/properties/item_description",
+                                "type": "string",
+                                "title": "The item_description schema",
+                                "description": "An explanation about the purpose of this instance.",
+                                "default": "",
+                                "examples": [
+                                    "A really delicious burger with two layers of meat"
+                                ]
+                            },
+                            "item_image": {
+                                "$id": "#/properties/items/items/anyOf/0/properties/item_image",
+                                "type": "string",
+                                "title": "The item_image schema",
+                                "description": "An explanation about the purpose of this instance.",
+                                "default": "",
+                                "examples": [
+                                    "url"
+                                ]
+                            },
+                            "menu_id": {
+                                "$id": "#/properties/items/items/anyOf/0/properties/menu_id",
+                                "type": "string",
+                                "title": "The menu_id schema",
+                                "description": "An explanation about the purpose of this instance.",
+                                "default": "",
+                                "examples": [
+                                    "3b81c8d4-1afe-4899-b3ea-42d4ee6d0e1d"
+                                ]
+                            },
+                            "item_price": {
+                                "$id": "#/properties/items/items/anyOf/0/properties/item_price",
+                                "type": "integer",
+                                "title": "The item_price schema",
+                                "description": "An explanation about the purpose of this instance.",
+                                "default": 0,
+                                "examples": [
+                                    5
+                                ]
+                            },
+                            "amount": {
+                                "$id": "#/properties/items/items/anyOf/0/properties/amount",
+                                "type": "integer",
+                                "title": "The amount schema",
+                                "description": "An explanation about the purpose of this instance.",
+                                "default": 0,
+                                "examples": [
+                                    1
+                                ]
+                            }
+                        },
+                        "additionalProperties": true
+                    }
+                ]
+            }
+        },
+        "totalPrice": {
+            "$id": "#/properties/totalPrice",
+            "type": "integer",
+            "title": "The totalPrice schema",
+            "description": "An explanation about the purpose of this instance.",
+            "default": 0,
+            "examples": [
+                5
+            ]
+        }
+    },
+    "additionalProperties": false
+}
