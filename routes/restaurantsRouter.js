@@ -106,8 +106,8 @@ module.exports = function(passport, data) {
     })
 
     //get restaurant name
-    router.get("/:name/address", (req, res) => {
-        restaurant.getAddress(req.params.name, function (err, dbResult) {
+    router.get("/:name/information", (req, res) => {
+        restaurant.getRestaurantInfo(req.params.name, function (err, dbResult) {
             if (err) {
                 res.status(400) 
                 res.json(err.stack)
