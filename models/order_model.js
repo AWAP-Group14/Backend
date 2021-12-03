@@ -17,9 +17,9 @@ const order = {
         return client.query('Select * from "order"', callback);
     },
 
-    insertOrder: function(orderId, itemString, totalPrice, body, callback) {
-        const values = [orderId, body.customer_id, body.order_status, body.delivery_type, itemString, body.delivery_address, body.order_comment, totalPrice]
-        return client.query('INSERT INTO "order" VALUES ($1, (SELECT id FROM customer WHERE id=$2), $3, $4, $5, $6, $7, $8) RETURNING *', values, callback)
+    insertOrder: function(orderId, itemString, totalPrice, body, date, callback) {
+        const values = [orderId, body.customer_id, body.order_status, body.delivery_type, itemString, body.delivery_address, body.order_comment, totalPrice, body.restaurant_name, date]
+        return client.query('INSERT INTO "order" VALUES ($1, (SELECT id FROM customer WHERE id=$2), $3, $4, $5, $6, $7, $8, $9, $10) RETURNING *', values, callback)
     },
 
     updateOrder: function(id, body, callback) {
