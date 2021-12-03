@@ -2,7 +2,15 @@ const client = require('../database');
 
 const order = {
     getById: function(id, callback) {
-        return client.query('Select * from order where id=$1', [id], callback);    
+        return client.query('Select * from "order" where id=$1', [id], callback);    
+    },
+
+    getByCustomerId: function(id, callback) {
+        return client.query('Select * from "order" where customer_id=$1 and order_status=5', [id], callback);    
+    },
+
+    getActiveByCustomerId: function(id, callback) {
+        return client.query('Select * from "order" where customer_id=$1 and order_status between 1 and 4', [id], callback);    
     },
 
     getAll: function(callback) {
