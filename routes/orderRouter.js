@@ -86,6 +86,14 @@ module.exports = function(passport, data) {
                 });
         }
     );
+    
+    const addDate = () => {
+        var today = new Date();
+        var date = today.getFullYear()+'-'+(today.getMonth()+1)+'-'+today.getDate();
+        var time = today.getHours() + ":" + today.getMinutes()
+        var dateTime = date+' '+time;
+        return dateTime
+    }
 
     router.post('/', function(req, res) { 
         const validationResult = orderValidator(req.body)
@@ -95,8 +103,8 @@ module.exports = function(passport, data) {
             if (index != -1) {
                 var items =  JSON.stringify(data.shoppingCart[index].items)
                 var totalPrice = data.shoppingCart[index].totalPrice
-                console.log(totalPrice)
-                order.insertOrder(orderId, items, totalPrice, req.body, function(err, dbResult) {
+                var date = addDate()
+                order.insertOrder(orderId, items, totalPrice, req.body, date, function(err, dbResult) {
                     if (err) {
                         res.status(400)
                         res.json(err.stack);

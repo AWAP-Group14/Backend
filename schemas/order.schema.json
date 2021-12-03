@@ -1,6 +1,6 @@
 {
     "$schema": "http://json-schema.org/draft-07/schema",
-    "$id": "http://example.com/example5.json",
+    "$id": "http://example.com/example200.json",
     "type": "object",
     "title": "The root schema",
     "description": "The root schema comprises the entire JSON document.",
@@ -11,7 +11,8 @@
             "order_status": 1,
             "delivery_type": 2,
             "delivery_address": "Tutkijantie 2, 90570 Oulu",
-            "order_comment": "Test-comment"
+            "order_comment": "Test-comment",
+            "restaurant_name": "Test123456"
         }
     ],
     "required": [
@@ -19,7 +20,8 @@
         "order_status",
         "delivery_type",
         "delivery_address",
-        "order_comment"
+        "order_comment",
+        "restaurant_name"
     ],
     "properties": {
         "customer_id": {
@@ -71,7 +73,17 @@
             "examples": [
                 "Test-comment"
             ]
+        },
+        "restaurant_name": {
+            "$id": "#/properties/restaurant_name",
+            "type": "string",
+            "title": "The restaurant_name schema",
+            "description": "An explanation about the purpose of this instance.",
+            "default": "",
+            "examples": [
+                "Test123456"
+            ]
         }
     },
-    "additionalProperties": false
+    "additionalProperties": true
 }
