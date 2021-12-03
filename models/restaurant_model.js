@@ -13,6 +13,10 @@ const restaurant = {
         return client.query('Select restaurant_email, restaurant_password from restaurant where restaurant_email=$1', [email], callback);
     },
 
+    getAddress: function(name, callback) {
+        return client.query("Select restaurant_address from restaurant where restaurant_name =$1", [name], callback)
+    },
+
     getByName: function(name, callback) {
 
         query = `SELECT restaurant.restaurant_name, restaurant_address, restaurant_operating_hours, restaurant_image, restaurant_type, 

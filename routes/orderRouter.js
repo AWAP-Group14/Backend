@@ -61,6 +61,32 @@ module.exports = function(passport, data) {
         }
     );
 
+    //get customer order history
+    router.get('/history/:id?',
+    function(request, response) {
+            order.getByCustomerId(request.params.id, function(err, dbResult) {
+                if (err) {
+                    response.json(err.stack);
+                } else {
+                    response.json(dbResult.rows);
+                }
+            });
+        }
+    );  
+
+    //get customer active orders
+    router.get('/active/:id?',
+        function(request, response) {
+                order.getActiveByCustomerId(request.params.id, function(err, dbResult) {
+                    if (err) {
+                        response.json(err.stack);
+                    } else {
+                        response.json(dbResult.rows);
+                    }
+                });
+        }
+    );
+
     router.post('/', function(req, res) { 
         const validationResult = orderValidator(req.body)
         if(validationResult) {
