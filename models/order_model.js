@@ -10,7 +10,11 @@ const order = {
     },
 
     getActiveByCustomerId: function(id, callback) {
-        return client.query('Select * from "order" where customer_id=$1 and order_status between 1 and 4', [id], callback);    
+        return client.query('Select * from "order" where customer_id=$1 and order_status between 0 and 4', [id], callback);    
+    },
+
+    getActiveByRestaurantName: function(restaurantName, callback) {
+        return client.query('Select * from "order" where upper(restaurant_name)=$1 and order_status between 0 and 4', [restaurantName], callback);    
     },
 
     getAll: function(callback) {

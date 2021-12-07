@@ -38,7 +38,7 @@ let setup = (passport, data) => {
 
     // Users id is available in req.user.userI
     passport.use(new JwtStrategy(options, (payload, done) => {
-        done(null, {userId: payload.userInfo.id, isManager: payload.isManager, userInfo: userInfo})
+        done(null, {userId: payload.userInfo.id, isManager: payload.isManager, userInfo: payload.userInfo})
     }))
 
     // Set up BasicStrategy
