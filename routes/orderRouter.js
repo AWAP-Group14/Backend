@@ -86,6 +86,20 @@ module.exports = function(passport, data) {
                 });
         }
     );
+
+    router.get('/restaurantactive/:name',
+    function(request, response) {
+            order.getActiveByRestaurantName(request.params.name.toUpperCase(), function(err, dbResult) {
+                if (err) {
+                    response.json(err.stack);
+                } else {
+                    response.json(dbResult.rows);
+                }
+            });
+    }
+);
+
+
     
     const addDate = () => {
         var today = new Date();
