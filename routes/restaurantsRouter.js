@@ -213,6 +213,20 @@ module.exports = function(passport, data) {
         })
     })
 
+    router.get("/:name/menu/:id", (req, res) => {
+        restaurant.getMenuIdByName(req.params.name, req.params.id, function (err, dbResult) {
+            if (err) {
+                res.status(400) 
+                res.json(err.stack)
+            } else {
+                res.status(200)
+                res.json(dbResult.rows)
+                
+            }
+        })
+    })
+
+
     router.post("/:name/menu", (req, res) => {
         const validationResult = menuValidator(req.body)
 

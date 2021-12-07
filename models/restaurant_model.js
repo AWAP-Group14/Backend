@@ -68,9 +68,9 @@ const restaurant = {
 
     insertItem: function (id, body, callback) {
         query = `INSERT INTO restaurant_item 
-                VALUES ($1, $2, $3, $4, (SELECT id FROM restaurant_menu WHERE UPPER(menu_name) = $5), $6)
+                VALUES ($1, $2, $3, $4, (SELECT id FROM restaurant_menu WHERE id = $5), $6)
                 RETURNING *`
-        const values = [id, body.item_name, body.item_description, body.item_image, body.menu_name.toUpperCase(), body.item_price]
+        const values = [id, body.item_name, body.item_description, body.item_image, body.menu_name, body.item_price]
         return client.query(query, values, callback)
     },
 
@@ -94,6 +94,10 @@ const restaurant = {
         return client.query("SELECT * FROM restaurant_menu LEFT OUTER JOIN restaurant_item ON restaurant_menu.id = restaurant_item.menu_id WHERE UPPER(restaurant_name) = $1", [restaurantName.toUpperCase()], callback)
     },
 
+    getMenuIdByName: function (menuName, restaurant_name, callback) {
+        return client.query("SELECT id FROM restaurant_menu where menu_name=$1 and restaurant_name=$2", [menuName, restaurant_name], callback)
+    },
+
     insertMenu: function (id, body, callback) {
         query = `INSERT INTO restaurant_menu (id, menu_name, restaurant_name)
                 VALUES ($1, $2, (SELECT restaurant_name FROM restaurant WHERE UPPER(restaurant_name) = $3))
@@ -113,7 +117,7 @@ const restaurant = {
 
     deleteMenu: function (id, callback) {
         //ALTER TABLE restaurant_menu ON DELETE CASCADE
-        return client.query("DELETE FROM restaurant_menu WHERE id= $1", [id], callback)
+        return client.query("DELETE FROM restaurant_menu WHERE menu_name= $1", [id], callback)
     }
 }
 module.exports = restaurant
