@@ -10,7 +10,7 @@ const restaurant = {
     },
 
     getByEmail: function(email, callback) {
-        return client.query('Select restaurant_email, restaurant_password from restaurant where restaurant_email=$1', [email], callback);
+        return client.query('Select restaurant_name, restaurant_email, restaurant_password from restaurant where restaurant_email=$1', [email], callback);
     },
 
     getRestaurantInfo: function(name, callback) {

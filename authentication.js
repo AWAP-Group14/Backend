@@ -25,8 +25,8 @@ let sign = (userInfo, isManager) => {
     return jwt.sign({ userId: userInfo.id, isManager: isManager, userInfo: userInfo}, secrets)
 }
 
-let signRestaurant = (isManager) => {
-    return jwt.sign({ isManager: isManager}, secrets)
+let signRestaurant = (isManager, restaurantInfo) => {
+    return jwt.sign({ isManager: isManager, restaurantInfo: restaurantInfo}, secrets)
 }
 
 
@@ -72,8 +72,10 @@ let setup = (passport, data) => {
                 } else {
                    let emailCheck = JSON.stringify(dbResult.rows);
                     if (emailCheck.length > 2){
+                        const restaurantInfo = dbResult.rows[0].restaurant_name
+                        console.log(restaurantInfo);
                         if (bcrypt.compareSync(password, dbResult.rows[0].restaurant_password)){
-                            done(null, true)
+                            done(null, restaurantInfo)
                         } else {
                             done(null, false)
                         }
