@@ -37,7 +37,7 @@ module.exports = function(passport, data) {
 
     router.post('/login', passport.authenticate('manager', {session: false}), (req, res) => {
         console.log(req.user);
-        const token = require('../authentication').signRestaurant(true)
+        const token = require('../authentication').signRestaurant(true, req.user)
         res.json({token : token})
         // PreviousURL not yet implemented, 
     })
