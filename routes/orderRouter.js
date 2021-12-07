@@ -72,7 +72,19 @@ module.exports = function(passport, data) {
                 }
             });
         }
-    );  
+    ); 
+    
+    router.get('/restauranthistory/:name?',
+    function(request, response) {
+            order.getFinishedOrders(request.params.name, function(err, dbResult) {
+                if (err) {
+                    response.json(err.stack);
+                } else {
+                    response.json(dbResult.rows);
+                }
+            });
+        }
+    );   
 
     //get customer active orders
     router.get('/active/:id?',

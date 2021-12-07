@@ -17,6 +17,10 @@ const order = {
         return client.query('Select * from "order" where upper(restaurant_name)=$1 and order_status between 0 and 4', [restaurantName], callback);    
     },
 
+    getFinishedOrders: function(restaurantName, callback) {
+        return client.query('Select * from "order" where upper(restaurant_name)=$1 and order_status=5', [restaurantName.toUpperCase()], callback);    
+    },
+
     getAll: function(callback) {
         return client.query('Select * from "order"', callback);
     },
