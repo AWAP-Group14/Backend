@@ -62,7 +62,7 @@ module.exports = function(passport, data) {
     );
 
     //get customer order history
-    router.get('/history/:id?',
+    router.get('/history/:id?',  passport.authenticate ('jwt' , {session: false} ),
     function(request, response) {
             order.getByCustomerId(request.params.id, function(err, dbResult) {
                 if (err) {
@@ -74,7 +74,7 @@ module.exports = function(passport, data) {
         }
     ); 
     
-    router.get('/restauranthistory/:name?',
+    router.get('/restauranthistory/:name?',  passport.authenticate ('jwt' , {session: false} ),
     function(request, response) {
             order.getFinishedOrders(request.params.name, function(err, dbResult) {
                 if (err) {
@@ -87,7 +87,7 @@ module.exports = function(passport, data) {
     );   
 
     //get customer active orders
-    router.get('/active/:id?',
+    router.get('/active/:id?',  passport.authenticate ('jwt' , {session: false} ),
         function(request, response) {
                 order.getActiveByCustomerId(request.params.id, function(err, dbResult) {
                     if (err) {
@@ -99,7 +99,7 @@ module.exports = function(passport, data) {
         }
     );
 
-    router.get('/restaurantactive/:name',
+    router.get('/restaurantactive/:name',  passport.authenticate ('jwt-man' , {session: false} ),
     function(request, response) {
             order.getActiveByRestaurantName(request.params.name.toUpperCase(), function(err, dbResult) {
                 if (err) {
@@ -148,7 +148,7 @@ module.exports = function(passport, data) {
         }
     })
 
-    router.put('/:id', function (req, res) {
+    router.put('/:id',  passport.authenticate ('jwt' , {session: false} ), function (req, res) {
         const validationResult = editOrderValidator(req.body)
         if(validationResult) {
             order.updateOrder(req.params.id, req.body, function(err, dbResult) {
@@ -166,7 +166,7 @@ module.exports = function(passport, data) {
         }
     })
 
-    router.delete('/:id', function(req, res) {
+    router.delete('/:id',  passport.authenticate ('jwt' , {session: false} ),function(req, res) {
         order.deleteOrder(req.body, function(err, dbResult) {
             if (err) {
                 res.status(400)
@@ -178,7 +178,7 @@ module.exports = function(passport, data) {
         })
     })
 
-    router.put('/changeStatus/:id', function (req, res) {
+    router.put('/changeStatus/:id',  passport.authenticate ('jwt' , {session: false} ),function (req, res) {
         if(!req.query.status) {
             res.status(400)
             res.send("Query parameter status is required")
@@ -204,7 +204,7 @@ module.exports = function(passport, data) {
     })
 
     //------------------SHOPPING CART-------------------------
-    router.post('/shoppingCart/:id', function (req, res) {
+    router.post('/shoppingCart/:id', passport.authenticate ('jwt-cust' , {session: false} ),function (req, res) {
         
         const validationResult = shoppingCartValidator(req.body)
         if(validationResult) {
