@@ -144,7 +144,7 @@ module.exports = function(passport, data) {
 
 
 
-    router.post('/:name/item', (req, res) => {
+    router.post('/:name/item', passport.authenticate('jwt-restaurant', {session: false}), (req, res) => {
         
         const validationResult = itemValidator(req.body)
 
@@ -166,7 +166,7 @@ module.exports = function(passport, data) {
         }
     })
 
-    router.put('/:name/item/:id', (req, res) => {
+    router.put('/:name/item/:id', passport.authenticate('jwt-restaurant', {session: false}), (req, res) => {
         const validationResult = editItemValidator(req.body)
 
         if(validationResult) {
@@ -188,7 +188,7 @@ module.exports = function(passport, data) {
         }
     })
 
-    router.delete('/:name/item/:id', (req, res) => {
+    router.delete('/:name/item/:id', passport.authenticate('jwt-restaurant', {session: false}), (req, res) => {
         restaurant.deleteItem(req.params.id, function (err, dbResult) {
             if (err) {
                 res.status(400) 
@@ -227,7 +227,7 @@ module.exports = function(passport, data) {
     })
 
 
-    router.post("/:name/menu", (req, res) => {
+    router.post("/:name/menu", passport.authenticate('jwt-restaurant', {session: false}), (req, res) => {
         const validationResult = menuValidator(req.body)
 
             if (validationResult) {
@@ -246,7 +246,7 @@ module.exports = function(passport, data) {
             }
     })
 
-    router.put("/:name/menu/:id", (req, res) => {
+    router.put("/:name/menu/:id", passport.authenticate('jwt-restaurant', {session: false}), (req, res) => {
         
         const validationResult = menuValidator(req.body)
 
@@ -270,7 +270,7 @@ module.exports = function(passport, data) {
         
     })
 
-    router.delete("/:name/menu/:id", (req, res) => {
+    router.delete("/:name/menu/:id", passport.authenticate('jwt-restaurant', {session: false}), (req, res) => {
         // Not working yet, need to cascade the table first. Look restaurant_model
         restaurant.deleteMenu(req.params.id, function (err, dbResult) {
             if (err) {
