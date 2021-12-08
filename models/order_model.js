@@ -48,6 +48,15 @@ const order = {
         const values = [status, id]
         return client.query(query, values, callback)
     },
+
+    changeOrderStatusAndTime: function(id, status, time,  callback) {
+        query = `UPDATE "order"
+                SET order_status = $1, estimated_time = $2
+                WHERE id = $3
+                RETURNING *`
+        const values = [status, time,  id]
+        return client.query(query, values, callback)
+    },
     
     deleteOrder: function(id, callback) {
         return client.query("DELETE FROM restaurant_menu WHERE id= $1", [id], callback)

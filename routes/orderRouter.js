@@ -182,6 +182,15 @@ module.exports = function(passport, data) {
         if(!req.query.status) {
             res.status(400)
             res.send("Query parameter status is required")
+        } else if (req.query.time != undefined){
+            order.changeOrderStatusAndTime(req.params.id, req.query.status, req.query.time, function(err, dbResult) {
+                if (err) {
+                    res.status(400)
+                    res.json(err.stack);
+                } else {
+                    res.json(dbResult.rows);
+                }
+            })
         } else {
             order.changeOrderStatus(req.params.id, req.query.status, function(err, dbResult) {
                 if (err) {
