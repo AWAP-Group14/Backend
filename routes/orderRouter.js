@@ -204,7 +204,8 @@ module.exports = function(passport, data) {
         if(!req.query.status) {
             res.status(400)
             res.send("Query parameter status is required")
-        }else if (req.query.time != undefined){
+
+        } else if (req.query.time != undefined){
             order.changeOrderStatusAndTime(req.params.id, req.query.status, req.query.time, function(err, dbResult) {
                 if (err) {
                     res.status(400)
@@ -212,8 +213,9 @@ module.exports = function(passport, data) {
                 } else {
                     res.json(dbResult.rows);
                 }
-            }) 
-            }   else {
+
+            })
+        } else {
             order.changeOrderStatus(req.params.id, req.query.status, function(err, dbResult) {
                 if (err) {
                     res.status(400)
