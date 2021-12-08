@@ -14,7 +14,7 @@ const order = {
     },
 
     getActiveByRestaurantName: function(restaurantName, callback) {
-        return client.query('Select * from "order" where upper(restaurant_name)=$1 and order_status between 0 and 4', [restaurantName], callback);    
+        return client.query('Select * from "order" where upper(restaurant_name)=$1 and order_status between 0 and 4 order BY DATE desc', [restaurantName], callback);    
     },
 
     getFinishedOrders: function(restaurantName, callback) {
