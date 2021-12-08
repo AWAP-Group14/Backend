@@ -36,12 +36,12 @@ let signRestaurant = (isManager, restaurantInfo) => {
 let setup = (passport, data) => {
     // setup JWTStragety
 
-    //
-    passport.use('jwt-cust', new JwtStrategy(options, (payload, done) => {
+    // Users id is available in req.user.userI
+    passport.use("jwt-customer",new JwtStrategy(options, (payload, done) => {
         done(null, {userId: payload.userInfo.id, isManager: payload.isManager, userInfo: payload.userInfo})
     }))
 
-    passport.use('jwt-man', new JwtStrategy(options, (payload, done) => {
+    passport.use("jwt-restaurant",new JwtStrategy(options, (payload, done) => {
         done(null, {isManager: payload.isManager, restaurantInfo: payload.restaurantInfo})
     }))
 

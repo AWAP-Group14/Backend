@@ -54,7 +54,7 @@ module.exports = function(passport, data) {
 
     
 
-    router.post('/signup', async (req, res) => {
+    router.post('/signup', (req, res) => {
 
         
         
@@ -104,7 +104,7 @@ module.exports = function(passport, data) {
         
     })
 
-    router.get('/:id?',
+    router.get('/:id?', passport.authenticate('jwt-restaurant', {session: false}),
     function(request, response) {
         if (request.params.id) {
             customer.getById(request.params.id, function(err, dbResult) {
@@ -125,7 +125,7 @@ module.exports = function(passport, data) {
     }
 });
 
-router.get('/email/:email?',
+router.get('/email/:email?', passport.authenticate('jwt-customer', {session: false}),
     function(request, response) {
         if (request.params.email) {
             customer.getByEmail(request.params.email, function(err, dbResult) {

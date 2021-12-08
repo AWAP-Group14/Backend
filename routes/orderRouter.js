@@ -39,7 +39,29 @@ module.exports = function(passport, data) {
 
     }) */
 
-    router.get('/:id?',
+    router.get('/restaurant/:id?', passport.authenticate('jwt-restaurant', {session: false}),
+        function(request, response) {
+            if (request.params.id) {
+                order.getById(request.params.id, function(err, dbResult) {
+                    if (err) {
+                        response.json(err.stack);
+                    } else {
+                        response.json(dbResult.rows);
+                    }
+                });
+            } else {
+                order.getAll(function(err, dbResult) {
+                    if (err) {
+                        response.json(err.stack);
+                    } else {
+                        response.json(dbResult.rows);
+                    }
+                }); 
+            }
+        }
+    );
+
+    router.get('/:id?', passport.authenticate('jwt-customer', {session: false}),
         function(request, response) {
             if (request.params.id) {
                 order.getById(request.params.id, function(err, dbResult) {
@@ -62,7 +84,7 @@ module.exports = function(passport, data) {
     );
 
     //get customer order history
-    router.get('/history/:id?',  passport.authenticate ('jwt' , {session: false} ),
+    router.get('/history/:id?', passport.authenticate('jwt-customer', {session: false}),
     function(request, response) {
             order.getByCustomerId(request.params.id, function(err, dbResult) {
                 if (err) {
@@ -74,7 +96,7 @@ module.exports = function(passport, data) {
         }
     ); 
     
-    router.get('/restauranthistory/:name?',  passport.authenticate ('jwt' , {session: false} ),
+    router.get('/restauranthistory/:name?', passport.authenticate('jwt-restaurant', {session: false}),
     function(request, response) {
             order.getFinishedOrders(request.params.name, function(err, dbResult) {
                 if (err) {
@@ -87,7 +109,7 @@ module.exports = function(passport, data) {
     );   
 
     //get customer active orders
-    router.get('/active/:id?',  passport.authenticate ('jwt' , {session: false} ),
+    router.get('/active/:id?', passport.authenticate('jwt-customer', {session: false}),
         function(request, response) {
                 order.getActiveByCustomerId(request.params.id, function(err, dbResult) {
                     if (err) {
@@ -99,7 +121,7 @@ module.exports = function(passport, data) {
         }
     );
 
-    router.get('/restaurantactive/:name',  passport.authenticate ('jwt-man' , {session: false} ),
+    router.get('/restaurantactive/:name', passport.authenticate('jwt-restaurant', {session: false}),
     function(request, response) {
             order.getActiveByRestaurantName(request.params.name.toUpperCase(), function(err, dbResult) {
                 if (err) {
@@ -121,7 +143,7 @@ module.exports = function(passport, data) {
         return dateTime
     }
 
-    router.post('/', function(req, res) { 
+    router.post('/', passport.authenticate('jwt-customer', {session: false}), function(req, res) { 
         const validationResult = orderValidator(req.body)
         if(validationResult) {
             let orderId = uuidv4()
@@ -148,7 +170,7 @@ module.exports = function(passport, data) {
         }
     })
 
-    router.put('/:id',  passport.authenticate ('jwt' , {session: false} ), function (req, res) {
+    /* router.put('/:id', passport.authenticate('jwt', {session: false}), function (req, res) {
         const validationResult = editOrderValidator(req.body)
         if(validationResult) {
             order.updateOrder(req.params.id, req.body, function(err, dbResult) {
@@ -164,9 +186,9 @@ module.exports = function(passport, data) {
         } else {
             res.sendStatus(400)
         }
-    })
+    }) */
 
-    router.delete('/:id',  passport.authenticate ('jwt' , {session: false} ),function(req, res) {
+    router.delete('/:id', passport.authenticate('jwt-restaurant', {session: false}), function(req, res) {
         order.deleteOrder(req.body, function(err, dbResult) {
             if (err) {
                 res.status(400)
@@ -182,6 +204,7 @@ module.exports = function(passport, data) {
         if(!req.query.status) {
             res.status(400)
             res.send("Query parameter status is required")
+
         } else if (req.query.time != undefined){
             order.changeOrderStatusAndTime(req.params.id, req.query.status, req.query.time, function(err, dbResult) {
                 if (err) {
@@ -190,6 +213,7 @@ module.exports = function(passport, data) {
                 } else {
                     res.json(dbResult.rows);
                 }
+
             })
         } else {
             order.changeOrderStatus(req.params.id, req.query.status, function(err, dbResult) {
@@ -204,7 +228,7 @@ module.exports = function(passport, data) {
     })
 
     //------------------SHOPPING CART-------------------------
-    router.post('/shoppingCart/:id', passport.authenticate ('jwt-cust' , {session: false} ),function (req, res) {
+    router.post('/shoppingCart/:id', passport.authenticate('jwt-customer', {session: false}), function (req, res) {
         
         const validationResult = shoppingCartValidator(req.body)
         if(validationResult) {
@@ -298,7 +322,7 @@ module.exports = function(passport, data) {
         }
     })
 
-    router.put('/shoppingCart/:id', (req, res) => {
+    router.put('/shoppingCart/:id', passport.authenticate('jwt-customer', {session: false}), (req, res) => {
         const validationResult = editShoppingCartValidator(req.body)
         if(validationResult) {
             let index = data.shoppingCart.findIndex(cart => cart.userId === req.params.id)
@@ -315,7 +339,7 @@ module.exports = function(passport, data) {
         }
     })
 
-    router.delete('/shoppingCart/:id', (req, res) => {
+    router.delete('/shoppingCart/:id', passport.authenticate('jwt-customer', {session: false}), (req, res) => {
         let index = data.shoppingCart.findIndex(cart => cart.userId === req.params.id)
         if (index !== -1) {
             // Added security can be added here to make sure that only that user itself can delete the shopping cart using payload containing the user itself
