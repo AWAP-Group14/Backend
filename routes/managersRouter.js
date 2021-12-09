@@ -36,7 +36,6 @@ module.exports = function(passport, data) {
 
 
     router.post('/login', passport.authenticate('manager', {session: false}), (req, res) => {
-        console.log(req.user);
         const token = require('../authentication').signRestaurant(true, req.user)
         res.json({token : token})
         // PreviousURL not yet implemented, 
@@ -45,7 +44,6 @@ module.exports = function(passport, data) {
     
     //upload image
     router.post('/upload', parser.single('image'), function(req, res){
-        console.log(req.file.path);
         res.json(req.file.path)
     })
 
@@ -61,10 +59,6 @@ module.exports = function(passport, data) {
                     response.json(err);
                 } else {
                    let emailCheck = JSON.stringify(dbResult.rows);
-                    console.log(emailCheck +" email from db");
-
-                    console.log("emailcheck lenght "+emailCheck.length);
-
                     if (emailCheck.length > 2){
                         res.status(409)
                         res.send("email or restaurant name already exists in the database")

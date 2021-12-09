@@ -26,12 +26,10 @@ module.exports = function(passport, data) {
     router.get('/',  passport.authenticate ('jwt' , {session: false} ),(req, res) => {
         //i dont think this page need to be handled by the backend because no data is required
         res.send("It works")    
-        console.log(req.user);
     })
 
     // OK
     router.post('/login', passport.authenticate('customer', {session: false}), (req, res) => {
-        console.log(req.user);
         const token = require('../authentication').sign(req.user, false)
         res.json({token : token})
         // Previous URL not yet implemented
@@ -68,10 +66,6 @@ module.exports = function(passport, data) {
                     response.json(err);
                 } else {
                    let emailCheck = JSON.stringify(dbResult.rows);
-                    console.log(emailCheck +" email from db");
-
-                    console.log("emailcheck lenght "+emailCheck.length);
-
                     if (emailCheck.length > 2){
                         res.status(409)
                         res.send("email already exists in the database")
