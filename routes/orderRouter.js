@@ -232,77 +232,77 @@ module.exports = function(passport, data) {
         
         const validationResult = shoppingCartValidator(req.body)
         if(validationResult) {
-            var indexToDelete = -1
             var itemsArray = []
             var totalPrice = 0
             let index = data.shoppingCart.findIndex(cart => (cart.userId === req.params.id && cart.restaurantName === req.body.restaurantName))
+            //Shopping cart already exist
             if (index != -1 ) {
                 var itemExist = false
                 restaurant.getItem(req.body.itemId, function (err, dbResult) {
                     if (err) {
+                        //Error
                         res.status(400)
                         res.json(err.stack);
                     } else if (dbResult.rows.length > 0) {
+                        //Item found
                         var result = dbResult.rows[0]
                         result.amount = req.body.amount
                         totalPrice = (result.amount * result.item_price)
                         itemsArray.push(result)
                         
                         //Adding the right amount
-                        data.shoppingCart[index].items.forEach((item, itemIndex) => {
-                            if((item.id == req.body.itemId) && (req.query.reduce != "1")) {
+                        data.shoppingCart[index].items.forEach(item => {
+                            if(item.id == req.body.itemId) {
                                 item.amount += req.body.amount
                                 itemExist = true 
                                 data.shoppingCart[index].totalPrice += (req.body.amount * item.item_price)
-                            } else if ((item.id == req.body.itemId) && (req.query.reduce == "1")){
-                                item.amount -= req.body.amount
-                                itemExist = true 
-                                data.shoppingCart[index].totalPrice -= (req.body.amount * item.item_price)
-                                if(item.amount < 1) {
-                                    indexToDelete = itemIndex
-                                }
                             }
                         })
-                        if((!itemExist) && (req.query.reduce != "1")) {
+                        //Add new item to shopping cart if item does not exist
+                        if(!itemExist) {
                             data.shoppingCart[index].items.push(result)
                             data.shoppingCart[index].totalPrice += totalPrice
                         }
-
-                        if(indexToDelete != -1) {
-                            data.shoppingCart[index].items.splice(indexToDelete, 1)
-                        }
                         res.status(200)
-                        res.send("Item succesfully added or deleted to an existing the shopping cart")
+                        res.send("Item succesfully added to an existing the shopping cart")
                         
                     } else {
+                        //Item not found
                         res.status(404)
                         res.send("Item ID does not exist")
                     }
                 })
 
             } else {
-                restaurant.getItem(req.body.itemId, function (err, dbResult) {
-                    if (err) {
-                        res.status(400)
-                        res.json(err.stack);
-                    } else if (dbResult.rows.length > 0) {
-                        var result = dbResult.rows[0]
-                        result.amount = req.body.amount
-                        totalPrice += (result.amount * result.item_price)
-                        itemsArray.push(result)
-                        data.shoppingCart.push({
-                            userId : req.params.id,
-                            restaurantName : req.body.restaurantName,
-                            items: itemsArray,
-                            totalPrice : totalPrice   
-                        })
-                        res.status(200)
-                        res.send("Item succesfully added to a new shopping cart")
-                    } else {
-                        res.status(404)
-                        res.send("Item ID does not exist")
-                    }
-                })
+                let index = data.shoppingCart.findIndex(cart => (cart.userId === req.params.id))
+                //Shopping cart from other restaurant does exist
+                if(index != -1) {
+                    res.status(409)
+                    res.send("Shopping cart from other restaurant already exist. Please empty this first")
+                } else {
+                    restaurant.getItem(req.body.itemId, function (err, dbResult) {
+                        if (err) {
+                            res.status(400)
+                            res.json(err.stack);
+                        } else if (dbResult.rows.length > 0) {
+                            var result = dbResult.rows[0]
+                            result.amount = req.body.amount
+                            totalPrice += (result.amount * result.item_price)
+                            itemsArray.push(result)
+                            data.shoppingCart.push({
+                                userId : req.params.id,
+                                restaurantName : req.body.restaurantName,
+                                items: itemsArray,
+                                totalPrice : totalPrice   
+                            })
+                            res.status(200)
+                            res.send("Item succesfully added to a new shopping cart")
+                        } else {
+                            res.status(404)
+                            res.send("Item ID does not exist")
+                        }
+                    })
+                }
             }
             // console.log(data.shoppingCart[index])
         } else {
@@ -312,8 +312,6 @@ module.exports = function(passport, data) {
 
     router.get('/shoppingCart/:id', (req, res) => {
         let index = data.shoppingCart.findIndex(cart => cart.userId === req.params.id)
-        var itemsArray = []
-        var count = 0
         if (index !== -1) {
             res.status(200)
             res.json(data.shoppingCart[index])
@@ -327,10 +325,16 @@ module.exports = function(passport, data) {
         if(validationResult) {
             let index = data.shoppingCart.findIndex(cart => cart.userId === req.params.id)
             if (index !== -1) {
-                data.shoppingCart[index].items = req.body.items
-                data.shoppingCart[index].totalPrice = req.body.totalPrice
-                res.status(200)
-                res.send("Shopping cart succesfully updated")
+                if(req.body.totalPrice == 0) {
+                    data.shoppingCart.splice(index, 1)
+                    res.status(200)
+                    res.send("Shopping cart has been deleted")
+                } else {
+                    data.shoppingCart[index].items = req.body.items
+                    data.shoppingCart[index].totalPrice = req.body.totalPrice
+                    res.status(200)
+                    res.send("Shopping cart succesfully updated")
+                }
             } else {
                 res.sendStatus(404)
             }

@@ -93,8 +93,6 @@ module.exports = function(passport, data) {
                     res.json(err.stack)
                     
                 } else {
-                    // res.json(dbResult.rows)
-                    console.log(dbResult.rows)
                     res.status(200)
                     res.json(dbResult.rows)
                     
@@ -128,7 +126,6 @@ module.exports = function(passport, data) {
                 
             } else if (dbResult.rows.length == 0){
                 res.status(404)
-                console.log(req.params.name.toUpperCase())
                 res.json("Restaurant not found")
             } else {
                 res.status(200)
